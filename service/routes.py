@@ -4,19 +4,21 @@ My Service
 Describe what your service does here
 """
 
+import logging
 import os
 import sys
-import logging
-from flask import Flask, jsonify, request, url_for, make_response, abort
-from .utils import status  # HTTP Status Codes
 
+from flask import Flask, abort, jsonify, make_response, request, url_for
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
 # variety of backends including SQLite, MySQL, and PostgreSQL
 from flask_sqlalchemy import SQLAlchemy
-from service.models import YourResourceModel, DataValidationError
+
+from service.models import DataValidationError, Recommendation
 
 # Import Flask application
 from . import app
+from .utils import status  # HTTP Status Codes
+
 
 ######################################################################
 # GET INDEX
@@ -38,4 +40,4 @@ def index():
 def init_db():
     """ Initializes the SQLAlchemy app """
     global app
-    YourResourceModel.init_db(app)
+    Recommendation.init_db(app)
