@@ -68,17 +68,15 @@ class Recommendation(db.Model):
         db.session.commit()
 
     def update(self):
-        # TODO
         """
-        Updates a YourResourceModel to the database
+        Updates a recommendation to the database
         """
-        logger.info("Saving %s", self.name)
+        logger.info("Saving %s", self.product_name)
         db.session.commit()
 
     def delete(self):
-        # TODO
-        """ Removes a YourResourceModel from the data store """
-        logger.info("Deleting %s", self.name)
+        """ Removes a recommendation from the data store """
+        logger.info("Deleting %s", self.product_name)
         db.session.delete(self)
         db.session.commit()
 
@@ -141,17 +139,22 @@ class Recommendation(db.Model):
 
     @classmethod
     def find(cls, by_id):
-        """ Finds a YourResourceModel by it's ID """
+        """ Finds a Recommendation by it's ID """
         logger.info("Processing lookup for id %s ...", by_id)
         return cls.query.get(by_id)
 
     @classmethod
-    def find_by_name(cls, name):
-        # TODO
-        """Returns all recommendation with the given name
+    def find_by_product_id(cls, product_id):
+        """ Finds a Recommendation by it's product ID """
+        logger.info("Processing name query for %s ...", product_id)
+        return cls.query.get(product_id)
+
+    @classmethod
+    def find_by_product_name(cls, product_name):
+        """Returns all recommendation with the given product name
 
         Args:
             name (string): the name of the recommendation you want to match
         """
-        logger.info("Processing name query for %s ...", name)
-        return cls.query.filter(cls.name == name)
+        logger.info("Processing name query for %s ...", product_name)
+        return cls.query.filter(cls.product_name == product_name)
