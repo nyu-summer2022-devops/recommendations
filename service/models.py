@@ -53,17 +53,12 @@ class Recommendation(db.Model):
     def __repr__(self):
         return "<id=[%s] Recommendation object for %r>" % (self.id, self.product_name)
 
-    def create(self, product_id, product_name, rec_id, rec_name, rec_type):
+    def create(self):
         """
         Creates a recommendation to the database
         """
         logger.info("Creating %s", self.product_name)
         self.id = None  # id must be none to generate next primary key
-        self.product_id = product_id
-        self.product_name = product_name
-        self.rec_id = rec_id
-        self.rec_name = rec_name
-        self.rec_type = rec_type
         db.session.add(self)
         db.session.commit()
 
@@ -72,6 +67,8 @@ class Recommendation(db.Model):
         Updates a recommendation to the database
         """
         logger.info("Saving %s", self.product_name)
+        if not self.id:
+            raise DataValidationError("Update called with empty ID field")
         db.session.commit()
 
     def delete(self):
@@ -144,17 +141,56 @@ class Recommendation(db.Model):
         return cls.query.get(by_id)
 
     @classmethod
+    def find_or_404(cls, id: int):
+        """Find a Recommendation by it's id
+        :param id: the id of the Recommendation to find
+        :type id: int
+        :return: an instance with the id, or 404_NOT_FOUND if not found
+        :rtype: Recommendation
+        """
+        logger.info("Processing lookup or 404 for id %s ...", id)
+        return cls.query.get_or_404(id)
+
+    @classmethod
     def find_by_product_id(cls, product_id):
         """ Finds a Recommendation by it's product ID """
         logger.info("Processing name query for %s ...", product_id)
-        return cls.query.get(product_id)
+        return cls.query.filter(cls.product_id == product_id).first_or_404()
 
     @classmethod
     def find_by_product_name(cls, product_name):
         """Returns all recommendation with the given product name
 
         Args:
-            name (string): the name of the recommendation you want to match
+            product_name (string): the product name of the recommendation you want to match
         """
         logger.info("Processing name query for %s ...", product_name)
         return cls.query.filter(cls.product_name == product_name)
+
+    @classmethod
+    def find_by_rec_id(cls, rec_id):
+        """ Finds a Recommendation by it's rec ID """
+        logger.info("Processing name query for %s ...", rec_id)
+        return cls.query.filter(cls.rec_id == rec_id).first_or_404()
+
+    @classmethod
+    def find_by_rec_name(cls, rec_name):
+        """Returns all recommendation with the given rec name
+
+        Args:
+            rec_name (string): the rec name of the recommendation you want to match
+        """
+        logger.info("Processing name query for %s ...", rec_name)
+        return cls.query.filter(cls.rec_name == rec_name)
+
+    @classmethod
+    def find_by_rec_type(cls, rec_type):
+        """Returns all recommendation with the given rec type
+
+        Args:
+            rec_type (string): the rec type of the recommendation you want to match
+        """
+        logger.info("Processing name query for %s ...", rec_type)
+        return cls.query.filter(cls.rec_type == rec_type)
+
+    
