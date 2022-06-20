@@ -35,7 +35,10 @@ class TestRecommendationModel(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         """ This runs once after the entire test suite """
+        basedir = os.path.abspath(os.path.dirname(__file__))
         db.session.close()
+        if os.path.exists('sqlite:///' + os.path.join(basedir, 'database.db')):
+            os.remove('sqlite:///' + os.path.join(basedir, 'database.db'))
 
     def setUp(self):
         """ This runs before each test """
