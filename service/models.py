@@ -104,11 +104,11 @@ class Recommendation(db.Model):
             self.rec_type = data[REC_TYPE]
         except KeyError as error:
             raise DataValidationError(
-                "Invalid YourResourceModel: missing " + error.args[0]
+                "Invalid Recommendation: missing " + error.args[0]
             )
         except TypeError as error:
             raise DataValidationError(
-                "Invalid YourResourceModel: body of request contained bad or no data"
+                "Invalid Recommendation: body of request contained bad or no data"
             )
         return self
 

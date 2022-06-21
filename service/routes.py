@@ -37,8 +37,8 @@ def index():
 @app.route("/recommendations", methods=['POST'])
 def create_recommendations():
     """
-    Creates a Pet
-    This endpoint will create a Pet based the data in the body this is posted
+    Creates a Recommendation
+    This endpoint will create a Recommendation based the data in the body this is posted
     """
     app.logger.info("Request to create a rec")
     check_content_type("application/json")
@@ -51,6 +51,24 @@ def create_recommendations():
 
     # return jsonify(message), status.HTTP_201_CREATED, {"Location", location_url}
     return jsonify(message), status.HTTP_201_CREATED
+
+######################################################################
+# Read A Recommendation
+######################################################################
+@app.route("/recommendations/<int:id>", methods=["GET"])
+def get_recommendations(id):
+    """
+    Retrieve a single Recommendation
+
+    This endpoint will return a Recommendation based on it's id
+    """
+    app.logger.info("Request for Recommendation with id: %s", id)
+    rec = Recommendation.find(id)
+    if not rec:
+        abort(status.HTTP_404_NOT_FOUND, f"Recommendation with id '{id}' was not found.")
+
+    app.logger.info("Returning recommendation: %s", rec.product_name)
+    return jsonify(rec.serialize()), status.HTTP_200_OK
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
@@ -72,3 +90,4 @@ def check_content_type(media_type):
         status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
         "Content-Type must be {}".format(media_type),
     )
+

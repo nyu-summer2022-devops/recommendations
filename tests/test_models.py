@@ -174,6 +174,18 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(rec.rec_name, data[REC_NAME])
         self.assertEqual(rec.rec_type, data[REC_TYPE])
 
+    def test_deserialize_missing_data(self):
+        """It should not deserialize a Recommendation with missing data"""
+        data = {"id": 1, "product_id": "toys", "rec_id": 123}
+        rec = Recommendation()
+        self.assertRaises(DataValidationError, rec.deserialize, data)
+
+    def test_deserialize_bad_data(self):
+        """It should not deserialize bad data"""
+        data = "this is not a dictionary"
+        rec = Recommendation()
+        self.assertRaises(DataValidationError, rec.deserialize, data)
+
     def test_find_recommendation(self):
         """It should Find a Recommendation by ID"""
         recs = RecommendationFactory.create_batch(5)
