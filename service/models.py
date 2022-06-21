@@ -22,7 +22,7 @@ logger = logging.getLogger("flask.app")
 # Create the SQLAlchemy object to be initialized later in init_db()
 db = SQLAlchemy()
 
-class Type(enum.Enum):
+class Type(enum.IntEnum):
     CROSS_SELL = 0
     UP_SELL    = 1
     ACCESSORY  = 2
