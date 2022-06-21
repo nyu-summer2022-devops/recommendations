@@ -4,21 +4,19 @@ My Service
 Describe what your service does here
 """
 
-import logging
 import os
 import sys
+import logging
+from flask import Flask, jsonify, request, url_for, make_response, abort
+from .utils import status  # HTTP Status Codes
 
-from flask import Flask, abort, jsonify, make_response, request, url_for
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
 # variety of backends including SQLite, MySQL, and PostgreSQL
 from flask_sqlalchemy import SQLAlchemy
-
-from service.models import DataValidationError, Recommendation
+from service.models import YourResourceModel, DataValidationError
 
 # Import Flask application
 from . import app
-from .utils import status  # HTTP Status Codes
-
 
 ######################################################################
 # GET INDEX
@@ -31,26 +29,6 @@ def index():
         status.HTTP_200_OK,
     )
 
-######################################################################
-# ADD A NEW RECOMMENDATION
-######################################################################
-@app.route("/recommendations", methods=['POST'])
-def create_recommendations():
-    """
-    Creates a Pet
-    This endpoint will create a Pet based the data in the body this is posted
-    """
-    app.logger.info("Request to create a rec")
-    check_content_type("application/json")
-    rec = Recommendation()
-    app.logger.info(request.get_json())
-    rec.deserialize(request.get_json())
-    rec.create()
-    message = rec.serialize()
-    # location_url = url_for("get_recommendations", rec_id = rec.id, _external=True)
-
-    # return jsonify(message), status.HTTP_201_CREATED, {"Location", location_url}
-    return jsonify(message), status.HTTP_201_CREATED
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
@@ -60,15 +38,4 @@ def create_recommendations():
 def init_db():
     """ Initializes the SQLAlchemy app """
     global app
-    Recommendation.init_db(app)
-
-def check_content_type(media_type):
-    """Checks that the media type is correct"""
-    content_type = request.headers.get("Content-Type")
-    if content_type and content_type == media_type:
-        return
-    app.logger.error("Invalid Content-Type: %s", content_type)
-    abort(
-        status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
-        "Content-Type must be {}".format(media_type),
-    )
+    YourResourceModel.init_db(app)
