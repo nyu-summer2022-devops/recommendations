@@ -57,6 +57,22 @@ class TestRecommendationServer(TestCase):
         """ This runs after each test """
         db.session.remove()
 
+    def _create_recommendations(self, count):
+        """Factory method to create recommendations in bulk"""
+        recommendations = []
+        for _ in range(count):
+            test_rec = RecommendationFactory()
+            response = self.client.post(
+                BASE_URL, json=test_rec.serialize(), content_type=CONTENT_TYPE_JSON
+            )
+            self.assertEqual(
+                response.status_code, status.HTTP_201_CREATED, "Could not create test recommendation"
+            )
+            new_rec = response.get_json()
+            test_rec.id = new_rec["id"]
+            recommendations.append(test_rec)
+        return recommendations
+
     ######################################################################
     #  P L A C E   T E S T   C A S E S   H E R E
     ######################################################################
@@ -98,3 +114,20 @@ class TestRecommendationServer(TestCase):
         # self.assertEqual(new_rec[REC_ID], test_rec.rec_id)
         # self.assertEqual(new_rec[REC_NAME], test_rec.rec_name)
         # self.assertEqual(new_rec[REC_TYPE], test_rec.rec_type)
+
+    def test_get_recommendation(self):
+        """It should Get a single Recommendation"""
+        # get the id of a recommendation
+        test_rec = self._create_recommendations(1)[0]
+        response = self.client.get(f"{BASE_URL}/{test_rec.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(data["product_name"], test_rec.product_name)
+
+    def test_get_recommendation_not_found(self):
+        """It should not Get a Recommendation thats not found"""
+        response = self.client.get(f"{BASE_URL}/0")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        data = response.get_json()
+        logging.debug("Response data = %s", data)
+        self.assertIn("was not found", data["message"])
