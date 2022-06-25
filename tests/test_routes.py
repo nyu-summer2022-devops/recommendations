@@ -137,7 +137,6 @@ class TestRecommendationServer(TestCase):
         # create a recommendation to update
         test_rec = RecommendationFactory()
         logging.debug("Test Recommendation: %s", test_rec.serialize())
-        test_rec.id = None
         response = self.client.post(
             BASE_URL,
             json=test_rec.serialize(),
@@ -145,62 +144,22 @@ class TestRecommendationServer(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED) 
 
-
-        # def test_create_recommendation(self):
-        # """It should Create a new Recommendation"""
-        # test_rec = RecommendationFactory()
-        # logging.debug("Test Recommendation: %s", test_rec.serialize())
-        # response = self.client.post(
-        #     BASE_URL,
-        #     json=test_rec.serialize(),
-        #     content_type=CONTENT_TYPE_JSON
-        # )
-        # self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-        # def _create_recommendations(self, count):
-        # """Factory method to create recommendations in bulk"""
-        # recommendations = []
-        # for _ in range(count):
-        #     test_rec = RecommendationFactory()
-        #     response = self.client.post(
-        #         BASE_URL, json=test_rec.serialize(), content_type=CONTENT_TYPE_JSON
-        #     )
-        #     self.assertEqual(
-        #         response.status_code, status.HTTP_201_CREATED, "Could not create test recommendation"
-        #     )
-        #     new_rec = response.get_json()
-        #     test_rec.id = new_rec["id"]
-        #     recommendations.append(test_rec)
-        # return recommendations     
-
-        # # create a recommendation to update
+        # # # create a recommendation to update
         # test_rec = self._create_recommendations(1)[0]
         # logging.debug("Test Recommendation: %s", test_rec.serialize())
         
         # update the recommendation
         new_rec = response.get_json()
-
-        # # update the recommendation
-        new_rec = test_rec.serialize()
-        # new_rec[ID] = test_rec.id
-        # new_rec[PRODUCT_ID] = 100
+        new_rec[PRODUCT_NAME] = "Hat"
+        new_rec[PRODUCT_ID] = 100
         logging.debug("New Recommendation: %s", new_rec)
-        response = self.client.get(
+        response = self.client.put(
             f"{BASE_URL}/{new_rec[ID]}",
             json=new_rec,
             content_type=CONTENT_TYPE_JSON,
         )
-        # logging.debug("Error message: %s", response.)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         updated_recommendation = response.get_json()
-        self.assertEqual(updated_recommendation[ID], test_rec.id)
+        self.assertEqual(updated_recommendation[ID], new_rec[ID])
         self.assertEqual(updated_recommendation[PRODUCT_ID], 100)
-
-
-    def test_update_recommendation_not_found(self):
-        """It should not Update a Recommendation thats not found"""
-        response = self.client.get(f"{BASE_URL}/0")
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        data = response.get_json()
-        logging.debug("Response data = %s", data)
-        self.assertIn("was not found", data["message"])
+        self.assertEqual(updated_recommendation[PRODUCT_NAME], "Hat")
