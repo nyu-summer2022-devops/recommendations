@@ -47,10 +47,10 @@ def create_recommendations():
     rec.deserialize(request.get_json())
     rec.create()
     message = rec.serialize()
-    # location_url = url_for("get_recommendations", rec_id = rec.id, _external=True)
-
-    # return jsonify(message), status.HTTP_201_CREATED, {"Location", location_url}
-    return jsonify(message), status.HTTP_201_CREATED
+    location_url = url_for("get_recommendations", id = rec.id, _external=True)
+    resp = make_response(jsonify(message), status.HTTP_201_CREATED)
+    resp.headers['Location'] = location_url
+    return resp
 
 ######################################################################
 # Read A Recommendation
