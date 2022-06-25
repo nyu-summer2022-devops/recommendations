@@ -94,8 +94,8 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # # Make sure location header is set
-        # location = response.headers.get("Location", None)
-        # self.assertIsNotNone(location)
+        location = response.headers.get("Location", None)
+        self.assertIsNotNone(location)
 
         # Check the data is correct
         new_rec = response.get_json()
@@ -105,15 +105,15 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(new_rec[REC_NAME], test_rec.rec_name)
         self.assertEqual(new_rec[REC_TYPE], test_rec.rec_type)
 
-        # # Check that the location header was correct
-        # response = self.client.get(location, content_type=CONTENT_TYPE_JSON)
-        # self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # new_rec = response.get_json()
-        # self.assertEqual(new_rec[PRODUCT_ID], test_rec.product_id)
-        # self.assertEqual(new_rec[PRODUCT_NAME], test_rec.product_name)
-        # self.assertEqual(new_rec[REC_ID], test_rec.rec_id)
-        # self.assertEqual(new_rec[REC_NAME], test_rec.rec_name)
-        # self.assertEqual(new_rec[REC_TYPE], test_rec.rec_type)
+        # Check that the location header was correct
+        response = self.client.get(location, content_type=CONTENT_TYPE_JSON)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        new_rec = response.get_json()
+        self.assertEqual(new_rec[PRODUCT_ID], test_rec.product_id)
+        self.assertEqual(new_rec[PRODUCT_NAME], test_rec.product_name)
+        self.assertEqual(new_rec[REC_ID], test_rec.rec_id)
+        self.assertEqual(new_rec[REC_NAME], test_rec.rec_name)
+        self.assertEqual(new_rec[REC_TYPE], test_rec.rec_type)
 
     def test_get_recommendation(self):
         """It should Get a single Recommendation"""
