@@ -12,7 +12,7 @@ from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
 from service import app
-from service.models import (PRODUCT_ID, PRODUCT_NAME, REC_ID, REC_NAME,
+from service.models import (ID, PRODUCT_ID, PRODUCT_NAME, REC_ID, REC_NAME,
                             REC_TYPE, Recommendation, db)
 from service.routes import init_db
 from service.utils import status  # HTTP Status Codes
@@ -131,3 +131,35 @@ class TestRecommendationServer(TestCase):
         data = response.get_json()
         logging.debug("Response data = %s", data)
         self.assertIn("was not found", data["message"])
+
+    def test_update_recommendation(self):
+        """It should Update an existing Recommendation"""
+        # create a recommendation to update
+        test_rec = RecommendationFactory()
+        logging.debug("Test Recommendation: %s", test_rec.serialize())
+        response = self.client.post(
+            BASE_URL,
+            json=test_rec.serialize(),
+            content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED) 
+
+        # # # create a recommendation to update
+        # test_rec = self._create_recommendations(1)[0]
+        # logging.debug("Test Recommendation: %s", test_rec.serialize())
+        
+        # update the recommendation
+        new_rec = response.get_json()
+        new_rec[PRODUCT_NAME] = "Hat"
+        new_rec[PRODUCT_ID] = 100
+        logging.debug("New Recommendation: %s", new_rec)
+        response = self.client.put(
+            f"{BASE_URL}/{new_rec[ID]}",
+            json=new_rec,
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        updated_recommendation = response.get_json()
+        self.assertEqual(updated_recommendation[ID], new_rec[ID])
+        self.assertEqual(updated_recommendation[PRODUCT_ID], 100)
+        self.assertEqual(updated_recommendation[PRODUCT_NAME], "Hat")
