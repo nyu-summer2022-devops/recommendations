@@ -71,6 +71,21 @@ def get_recommendations(id):
     return jsonify(rec.serialize()), status.HTTP_200_OK
 
 ######################################################################
+# List all the Recommendations
+######################################################################
+@app.route("/recommendations", methods=["GET"])
+def list_recommendations():
+    """
+    Retrieves all recommendations
+
+    This endpoint will return all the recommendations available
+    """
+    app.logger.info("Request to list all the recommendations")
+    rec = Recommendation.all()
+    message = [recommendation.serialize() for recommendation in rec]
+    return jsonify(message), status.HTTP_200_OK 
+
+######################################################################
 # UPDATE AN EXISTING PET
 ######################################################################
 @app.route("/recommendations/<int:id>", methods=["PUT"])
@@ -93,6 +108,7 @@ def update_recommendations(id):
 
     app.logger.info("Recommendation with ID [%s] updated.", rec.id)
     return jsonify(rec.serialize()), status.HTTP_200_OK
+
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S

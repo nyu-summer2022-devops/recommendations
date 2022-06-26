@@ -132,6 +132,16 @@ class TestRecommendationServer(TestCase):
         logging.debug("Response data = %s", data)
         self.assertIn("was not found", data["message"])
 
+
+    def test_list_recommendation(self):
+        """It should get all the Recommendations"""
+        # create recommendations
+        test_rec = self._create_recommendations(3)[0]
+        response = self.client.get(f"{BASE_URL}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(data[0]["product_name"], test_rec.product_name)
+
     def test_update_recommendation(self):
         """It should Update an existing Recommendation"""
         # create a recommendation to update
@@ -163,4 +173,5 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(updated_recommendation[ID], new_rec[ID])
         self.assertEqual(updated_recommendation[PRODUCT_ID], 100)
         self.assertEqual(updated_recommendation[PRODUCT_NAME], "Hat")
+
 
