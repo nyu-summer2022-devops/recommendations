@@ -131,3 +131,12 @@ class TestRecommendationServer(TestCase):
         data = response.get_json()
         logging.debug("Response data = %s", data)
         self.assertIn("was not found", data["message"])
+
+    def test_list_recommendation(self):
+        """It should get all the Recommendations"""
+        # create recommendations
+        test_rec = self._create_recommendations(3)[0]
+        response = self.client.get(f"{BASE_URL}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(data[0]["product_name"], test_rec.product_name)
