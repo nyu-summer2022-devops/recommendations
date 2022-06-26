@@ -47,10 +47,10 @@ def create_recommendations():
     rec.deserialize(request.get_json())
     rec.create()
     message = rec.serialize()
-    # location_url = url_for("get_recommendations", rec_id = rec.id, _external=True)
-
-    # return jsonify(message), status.HTTP_201_CREATED, {"Location", location_url}
-    return jsonify(message), status.HTTP_201_CREATED
+    location_url = url_for("get_recommendations", id = rec.id, _external=True)
+    resp = make_response(jsonify(message), status.HTTP_201_CREATED)
+    resp.headers['Location'] = location_url
+    return resp
 
 ######################################################################
 # Read A Recommendation
@@ -84,6 +84,31 @@ def list_recommendations():
     rec = Recommendation.all()
     message = [recommendation.serialize() for recommendation in rec]
     return jsonify(message), status.HTTP_200_OK 
+
+######################################################################
+# UPDATE AN EXISTING PET
+######################################################################
+@app.route("/recommendations/<int:id>", methods=["PUT"])
+def update_recommendations(id):
+    """
+    Update a Recommendation
+
+    This endpoint will update a Recommendation based the body that is posted
+    """
+    app.logger.info("Request to update Recommendation with id: %s", id)
+    check_content_type("application/json")
+
+    rec = Recommendation.find(id)
+    if not rec:
+        abort(status.HTTP_404_NOT_FOUND, f"Recommendation with id '{id}' was not found.")
+
+    rec.deserialize(request.get_json())
+    rec.id = id
+    rec.update()
+
+    app.logger.info("Recommendation with ID [%s] updated.", rec.id)
+    return jsonify(rec.serialize()), status.HTTP_200_OK
+
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S

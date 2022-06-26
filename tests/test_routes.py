@@ -12,7 +12,7 @@ from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
 from service import app
-from service.models import (PRODUCT_ID, PRODUCT_NAME, REC_ID, REC_NAME,
+from service.models import (ID, PRODUCT_ID, PRODUCT_NAME, REC_ID, REC_NAME,
                             REC_TYPE, Recommendation, db)
 from service.routes import init_db
 from service.utils import status  # HTTP Status Codes
@@ -94,8 +94,8 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # # Make sure location header is set
-        # location = response.headers.get("Location", None)
-        # self.assertIsNotNone(location)
+        location = response.headers.get("Location", None)
+        self.assertIsNotNone(location)
 
         # Check the data is correct
         new_rec = response.get_json()
@@ -105,15 +105,15 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(new_rec[REC_NAME], test_rec.rec_name)
         self.assertEqual(new_rec[REC_TYPE], test_rec.rec_type)
 
-        # # Check that the location header was correct
-        # response = self.client.get(location, content_type=CONTENT_TYPE_JSON)
-        # self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # new_rec = response.get_json()
-        # self.assertEqual(new_rec[PRODUCT_ID], test_rec.product_id)
-        # self.assertEqual(new_rec[PRODUCT_NAME], test_rec.product_name)
-        # self.assertEqual(new_rec[REC_ID], test_rec.rec_id)
-        # self.assertEqual(new_rec[REC_NAME], test_rec.rec_name)
-        # self.assertEqual(new_rec[REC_TYPE], test_rec.rec_type)
+        # Check that the location header was correct
+        response = self.client.get(location, content_type=CONTENT_TYPE_JSON)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        new_rec = response.get_json()
+        self.assertEqual(new_rec[PRODUCT_ID], test_rec.product_id)
+        self.assertEqual(new_rec[PRODUCT_NAME], test_rec.product_name)
+        self.assertEqual(new_rec[REC_ID], test_rec.rec_id)
+        self.assertEqual(new_rec[REC_NAME], test_rec.rec_name)
+        self.assertEqual(new_rec[REC_TYPE], test_rec.rec_type)
 
     def test_get_recommendation(self):
         """It should Get a single Recommendation"""
@@ -132,6 +132,7 @@ class TestRecommendationServer(TestCase):
         logging.debug("Response data = %s", data)
         self.assertIn("was not found", data["message"])
 
+
     def test_list_recommendation(self):
         """It should get all the Recommendations"""
         # create recommendations
@@ -140,3 +141,37 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.get_json()
         self.assertEqual(data[0]["product_name"], test_rec.product_name)
+
+    def test_update_recommendation(self):
+        """It should Update an existing Recommendation"""
+        # create a recommendation to update
+        test_rec = RecommendationFactory()
+        logging.debug("Test Recommendation: %s", test_rec.serialize())
+        response = self.client.post(
+            BASE_URL,
+            json=test_rec.serialize(),
+            content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED) 
+
+        # # # create a recommendation to update
+        # test_rec = self._create_recommendations(1)[0]
+        # logging.debug("Test Recommendation: %s", test_rec.serialize())
+        
+        # update the recommendation
+        new_rec = response.get_json()
+        new_rec[PRODUCT_NAME] = "Hat"
+        new_rec[PRODUCT_ID] = 100
+        logging.debug("New Recommendation: %s", new_rec)
+        response = self.client.put(
+            f"{BASE_URL}/{new_rec[ID]}",
+            json=new_rec,
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        updated_recommendation = response.get_json()
+        self.assertEqual(updated_recommendation[ID], new_rec[ID])
+        self.assertEqual(updated_recommendation[PRODUCT_ID], 100)
+        self.assertEqual(updated_recommendation[PRODUCT_NAME], "Hat")
+
+
