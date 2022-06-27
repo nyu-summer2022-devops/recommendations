@@ -124,11 +124,11 @@ def delete_recommendations(id):
     This endpoint will delete a Recommendation based on the recommendation's id
     """
     app.logger.info("Request to delete Recommendation with id: %s", id)
-    check_content_type("application/json")
     rec = Recommendation.find(id)
-
-    if rec is not None:
+    if rec:
         rec.delete()
+    
+    app.logger.info("Recommendation with ID [%s] delete complete.", id)
     return "", status.HTTP_204_NO_CONTENT    
 
 
