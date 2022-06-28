@@ -1,42 +1,36 @@
 """
-Recommendation API Service Test Suite
-Test cases can be run with the following:
-  nosetests -v --with-spec --spec-color
-  coverage report -m
+Test cases for YourResourceModel Model
+
 """
-import json
 import logging
 import os
-from unittest import TestCase
-from unittest.mock import MagicMock, patch
+import unittest
 
-from service import app
+from flask import Flask
 from service.models import (ID, PRODUCT_ID, PRODUCT_NAME, REC_ID, REC_NAME,
-                            REC_TYPE, Recommendation, db)
-from service.routes import init_db
-from service.utils import status  # HTTP Status Codes
+                            REC_TYPE, DataValidationError, Recommendation,
+                            Type, db)
+from werkzeug.exceptions import NotFound
 
 from tests.factories import RecommendationFactory
 
-BASE_URL = "/recommendations"
-CONTENT_TYPE_JSON = "application/json"
-
 
 ######################################################################
-#  T E S T   C A S E S
+#  <your resource name>   M O D E L   T E S T   C A S E S
 ######################################################################
-class TestRecommendationServer(TestCase):
-    """ REST API Server Tests """
+class TestRecommendationModel(unittest.TestCase):
+    """ Test Cases for Recommendation Model """
+    app = None
 
     @classmethod
     def setUpClass(cls):
         """ This runs once before the entire test suite """
         basedir = os.path.abspath(os.path.dirname(__file__))
-        app.config['TESTING'] = True
-        app.config['DEBUG'] = False
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'database.db')
-        app.logger.setLevel(logging.CRITICAL)
-        init_db()
+        cls.app = Flask(__name__)
+        cls.app.config['TESTING'] = True
+        cls.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'database.db')
+        cls.app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+        Recommendation.init_db(cls.app)
 
     @classmethod
     def tearDownClass(cls):
@@ -48,7 +42,6 @@ class TestRecommendationServer(TestCase):
 
     def setUp(self):
         """ This runs before each test """
-        self.client = app.test_client()
         db.session.query(Recommendation).delete()
         db.session.commit()
 
@@ -56,24 +49,8 @@ class TestRecommendationServer(TestCase):
         """ This runs after each test """
         db.session.remove()
 
-    def _create_recommendations(self, count):
-        """Factory method to create recommendations in bulk"""
-        recommendations = []
-        for _ in range(count):
-            test_rec = RecommendationFactory()
-            response = self.client.post(
-                BASE_URL, json=test_rec.serialize(), content_type=CONTENT_TYPE_JSON
-            )
-            self.assertEqual(
-                response.status_code, status.HTTP_201_CREATED, "Could not create test recommendation"
-            )
-            new_rec = response.get_json()
-            test_rec.id = new_rec["id"]
-            recommendations.append(test_rec)
-        return recommendations
-
     ######################################################################
-    #  P L A C E   T E S T   C A S E S   H E R E
+    #  T E S T   C A S E S
     ######################################################################
 
     def test_index(self):
@@ -233,6 +210,159 @@ class TestRecommendationServer(TestCase):
         rec = RecommendationFactory()
         rec.create()
         self.assertEqual(len(Recommendation.all()), 1)
+        # delete the pet and make sure it isn't in the database
         rec.delete()
         self.assertEqual(len(Recommendation.all()), 0)
+
+    def test_list_all_pets(self):
+        """It should List all Pets in the database"""
+        recs = Recommendation.all()
+        self.assertEqual(len(recs), 0)
+        for i in range(5):
+            rec = RecommendationFactory()
+            rec.create()
+        recs = Recommendation.all()
+        self.assertEqual(len(recs), 5)
+
+    def test_serialize_a_pet(self):
+        """It should serialize a Rec"""
+        rec = Recommendation()
+        data = rec.serialize()
+        self.assertNotEqual(data, None)
+        self.assertIn(ID, data)
+        self.assertEqual(data[ID], rec.id)
+        self.assertIn(PRODUCT_ID, data)
+        self.assertEqual(data[PRODUCT_ID], rec.product_id)
+        self.assertIn(PRODUCT_NAME, data)
+        self.assertEqual(data[PRODUCT_NAME], rec.product_name)
+        self.assertIn(REC_ID, data)
+        self.assertEqual(data[REC_ID], rec.rec_id)
+        self.assertIn(REC_NAME, data)
+        self.assertEqual(data[REC_NAME], rec.rec_name)
+        self.assertIn(REC_TYPE, data)
+        self.assertEqual(data[REC_TYPE], rec.rec_type)
+
+    def test_deserialize_a_pet(self):
+        """It should de-serialize a Rec"""
+        data = RecommendationFactory().serialize()
+        rec = Recommendation()
+        rec.deserialize(data)
+        self.assertNotEqual(rec, None)
+        self.assertEqual(rec.id, data[ID])
+        self.assertEqual(rec.product_id, data[PRODUCT_ID])
+        self.assertEqual(rec.product_name, data[PRODUCT_NAME])
+        self.assertEqual(rec.rec_id, data[REC_ID])
+        self.assertEqual(rec.rec_name, data[REC_NAME])
+        self.assertEqual(rec.rec_type, data[REC_TYPE])
+
+    def test_deserialize_missing_data(self):
+        """It should not deserialize a Recommendation with missing data"""
+        data = {"id": 1, "product_id": "toys", "rec_id": 123}
+        rec = Recommendation()
+        self.assertRaises(DataValidationError, rec.deserialize, data)
+
+    def test_deserialize_bad_data(self):
+        """It should not deserialize bad data"""
+        data = "this is not a dictionary"
+        rec = Recommendation()
+        self.assertRaises(DataValidationError, rec.deserialize, data)
+
+    def test_find_recommendation(self):
+        """It should Find a Recommendation by ID"""
+        recs = RecommendationFactory.create_batch(5)
+        for rec in recs:
+            rec.create()
+        logging.debug(recs)
+        self.assertEqual(len(Recommendation.all()), 5)
+        rec = Recommendation.find(recs[1].id)
+        self.assertIsNotNone(rec)
+        self.assertEqual(rec.id, recs[1].id)
+        self.assertEqual(rec.product_id, recs[1].product_id)
+        self.assertEqual(rec.product_name, recs[1].product_name)
+        self.assertEqual(rec.rec_id, recs[1].rec_id)
+        self.assertEqual(rec.rec_name, recs[1].rec_name)
+        self.assertEqual(rec.rec_type, recs[1].rec_type)
+
+    def test_find_recommendation_by_product_id(self):
+        """It should Find a Recommendation by PRODUCT ID"""
+        recs = RecommendationFactory.create_batch(5)
+        for rec in recs:
+            rec.create()
+        logging.debug(recs)
+        product_id = recs[0].product_id
+        count = len([rec for rec in recs if rec.product_id == product_id])
+        found = Recommendation.find_by_product_id(product_id)
+        self.assertEqual(count, 1)
+        self.assertIsNotNone(found)
+        self.assertEqual(recs[0].product_id, found.product_id)
+    
+    def test_find_recommendation_by_product_name(self):
+        """It should Find a Recommendation by PRODUCT NAME"""
+        recs = RecommendationFactory.create_batch(10)
+        for rec in recs:
+            rec.create()
+        logging.debug(recs)
+        product_name = recs[0].product_name
+        count = len([rec for rec in recs if rec.product_name == product_name])
+        found = Recommendation.find_by_product_name(product_name)
+        self.assertEqual(count, found.count())
+        for rec in found:
+            self.assertEqual(rec.product_name, product_name)
+
+    def test_find_recommendation_by_rec_id(self):
+        """It should Find a Recommendation by RECOMMENDATION ID"""
+        recs = RecommendationFactory.create_batch(5)
+        for rec in recs:
+            rec.create()
+        logging.debug(recs)
+        rec_id = recs[0].rec_id
+        count = len([rec for rec in recs if rec.rec_id == rec_id])
+        found = Recommendation.find_by_rec_id(rec_id)
+        self.assertEqual(count, 1)
+        self.assertIsNotNone(found)
+        self.assertEqual(recs[0].rec_id, found.rec_id)
+    
+    def test_find_recommendation_by_rec_name(self):
+        """It should Find a Recommendation by RECOMMENDATION NAME"""
+        recs = RecommendationFactory.create_batch(10)
+        for rec in recs:
+            rec.create()
+        logging.debug(recs)
+        rec_name = recs[0].rec_name
+        count = len([rec for rec in recs if rec.rec_name == rec_name])
+        found = Recommendation.find_by_rec_name(rec_name)
+        self.assertEqual(count, found.count())
+        for rec in found:
+            self.assertEqual(rec.rec_name, rec_name)
+
+    def test_find_recommendation_by_rec_type(self):
+        """It should Find a Recommendation by RECOMMENDATION TYPE"""
+        recs = RecommendationFactory.create_batch(10)
+        for rec in recs:
+            rec.create()
+        logging.debug(recs)
+        rec_type = recs[0].rec_type
+        count = len([rec for rec in recs if rec.rec_type == rec_type])
+        found = Recommendation.find_by_rec_type(rec_type)
+        self.assertEqual(count, found.count())
+        for rec in found:
+            self.assertEqual(rec.rec_type, rec_type)
         
+    def test_find_or_404_found(self):
+        """It should Find or return 404 not found"""
+        recs = RecommendationFactory.create_batch(3)
+        for rec in recs:
+            rec.create()
+
+        rec = Recommendation.find_or_404(recs[1].id)
+        self.assertIsNot(rec, None)
+        self.assertEqual(rec.id, recs[1].id)
+        self.assertEqual(rec.product_id, recs[1].product_id)
+        self.assertEqual(rec.product_name, recs[1].product_name)
+        self.assertEqual(rec.rec_id, recs[1].rec_id)
+        self.assertEqual(rec.rec_name, recs[1].rec_name)
+        self.assertEqual(rec.rec_type, recs[1].rec_type)
+
+    def test_find_or_404_not_found(self):
+        """It should return 404 not found"""
+        self.assertRaises(NotFound, Recommendation.find_or_404, 0)
