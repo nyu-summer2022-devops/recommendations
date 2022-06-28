@@ -185,3 +185,53 @@ class TestRecommendationServer(TestCase):
         # try to read the deleted recommendation
         response = self.client.get(f"{BASE_URL}/{test_rec.id}")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_create_recommendation_with_id(self):
+        """It should return 405 method not allowed error"""
+        response = self.client.post(f"{BASE_URL}/0")
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        data = response.get_json()
+        logging.debug("Response data = %s", data)
+        self.assertIn("405 Method Not Allowed", data["message"])
+    
+    def test_create_recommendation_no_data(self):
+        """It should not Create a Recommendation with missing data"""
+        response = self.client.post(
+            BASE_URL,
+            json={},
+            content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_recommendation_no_content_type(self):
+        """It should not Create a Recommendation with no content type"""
+        response = self.client.post(BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    # def test_create_recommendation_id(self):
+    #     """It should not Create a Recommendation with bad id data"""
+    #     test_rec = RecommendationFactory()
+    #     logging.debug(test_rec)
+    #     # change available to a string
+    #     test_rec.id = "0"
+    #     response = self.client.post(
+    #         BASE_URL,
+    #         json=test_rec.serialize(),
+    #         content_type=CONTENT_TYPE_JSON
+    #     )
+    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    # def test_create_recommendation_bad_rec_type(self):
+    #     """It should not Create a Recommendation with bad rec_type data"""
+    #     recommendation = RecommendationFactory()
+    #     logging.debug(recommendation)
+    #     # change rec_type to a bad string
+    #     test_rec = recommendation.serialize()
+    #     test_rec[REC_TYPE] = "aaaaa"    # wrong case
+    #     response = self.client.post(
+    #         BASE_URL,
+    #         json=test_rec,
+    #         content_type=CONTENT_TYPE_JSON
+    #     )
+    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
