@@ -1,31 +1,56 @@
-# NYU DevOps Project Template
+# Recommendations Microservice for a Commerce website
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/Language-Python-blue.svg)](https://python.org/)
 
-This is a skeleton you can use to start your projects
+This system is designed for an **eCommerce store**.
 
 ## Overview
 
-This project template contains starter code for your class project. The `/service` folder contains your `models.py` file for your model and a `routes.py` file for your service. The `/tests` folder has test case starter code for testing the model and the service separately. All you need to do is add your functionality. You can use the [lab-flask-tdd](https://github.com/nyu-devops/lab-flask-tdd) for code examples to copy from.
+The recommendations resource is a representation a product recommendation based on another product. In essence it is just a relationship between two products that "go
+together" (e.g., radio and batteries, printers and ink, shirts and pants, etc.). It could also recommend based on what other customers have purchased like "customers who bought item A usually buy item B". Recommendations should have a recommendation type like cross-sell, up- sell, accessory, etc. This way a product page could request all of the up-sells for a product. (Hint: an up-sell is a more full featured and expensive product that you recommend instead of the one they initially want to buy, cross-sells are other items just like this one with similar features and price.)
 
-## Automatic Setup
+The `/service` folder contains `models.py` file for the model and a `routes.py` file for the service. The `/tests` folder has test cases for testing the model and the service separately.
 
-The best way to use this repo is to start your own repo using it as a git template. To do this just press the green **Use this template** button in GitHub and this will become the source for your repository.
+## Attributes
 
-## Manual Setup
+id : non-information bearing key
 
-You can also clone this repository and then copy and paste the starter code into your project repo folder on your local computer. Be careful not to copy over your own `README.md` file so be selective in what you copy.
+product_id : id of the source product
 
-There are 4 hidden files that you will need to copy manually if you use the Mac Finder or Windows Explorer to copy files from this folder into your repo folder.
+product_name : name of the source product
 
-These should be copied using a bash shell as follows:
+rec_id : id of the recommended product
 
-```bash
-    cp .gitignore  ../<your_repo_folder>/
-    cp .flaskenv ../<your_repo_folder>/
-    cp .gitattributes ../<your_repo_folder>/
-```
+rec_name : name of the recommended product
+
+rec_type : the type of recommendation (CROSS_SELL = 0, UP_SELL = 1, ACCESSORY = 2, BUY_WITH = 3)
+
+## Functionalities
+
+### 1. Create a new recommendation
+
+POST: `/recommendations`
+
+fields: product_id, product_name, rec_id, rec_name, rec_type
+
+### 2. Read a recommendation
+
+GET: `/recommendations/<int:id>`
+
+fields: product_id, product_name, rec_id, rec_name, rec_type
+
+### 3. Update a recommendation
+
+PUT: `/recommendations/<int:id>`
+
+### 4. Delete a recommendation
+
+DELETE: `/recommendations/<int:id>`
+
+### 5. List recommendations
+
+GET: `/recommendations`
 
 ## Contents
 
@@ -55,10 +80,11 @@ tests/              - test cases package
 └── test_routes.py  - test suite for service routes
 ```
 
-## License
+## Recommendation Squad Members
+Huang, Brady;
+Kankanala, Meghana;
+Li, Sixian;
+Chiu, Pin-Yi;
+Wang, Qiheng
 
-Copyright (c) John Rofrano. All rights reserved.
-
-Licensed under the Apache License. See [LICENSE](LICENSE)
-
-This repository is part of the NYU masters class: **CSCI-GA.2820-001 DevOps and Agile Methodologies** created and taught by *John Rofrano*, Adjunct Instructor, NYU Courant Institute, Graduate Division, Computer Science, and NYU Stern School of Business.
+This repository is part of the NYU masters class: **CSCI-GA.2820-001 DevOps and Agile Methodologies** taught by John Rofrano, Adjunct Instructor, NYU Courant Institute, Graduate Division, Computer Science, and NYU Stern School of Business.
