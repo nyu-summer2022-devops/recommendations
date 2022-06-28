@@ -228,11 +228,10 @@ class TestRecommendationServer(TestCase):
     #     )
     #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_delete_a_recommendation_by_rec_id(self):
+    def test_delete_a_recommendation(self):
         """ It should delete a recommendation """
         rec = RecommendationFactory()
         rec.create()
-        response = Recommendation.find(rec.id)
         self.assertEqual(len(Recommendation.all()), 1)
         rec.delete()
         self.assertEqual(len(Recommendation.all()), 0)
