@@ -129,12 +129,12 @@ class TestRecommendationModel(unittest.TestCase):
         rec = RecommendationFactory()
         rec.create()
         self.assertEqual(len(Recommendation.all()), 1)
-        # delete the pet and make sure it isn't in the database
+        # delete the rec and make sure it isn't in the database
         rec.delete()
         self.assertEqual(len(Recommendation.all()), 0)
 
-    def test_list_all_pets(self):
-        """It should List all Pets in the database"""
+    def test_list_all_recs(self):
+        """It should List all recommendations in the database"""
         recs = Recommendation.all()
         self.assertEqual(len(recs), 0)
         for i in range(5):
@@ -143,7 +143,7 @@ class TestRecommendationModel(unittest.TestCase):
         recs = Recommendation.all()
         self.assertEqual(len(recs), 5)
 
-    def test_serialize_a_pet(self):
+    def test_serialize_a_rec(self):
         """It should serialize a Rec"""
         rec = Recommendation()
         data = rec.serialize()
@@ -161,7 +161,7 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertIn(REC_TYPE, data)
         self.assertEqual(data[REC_TYPE], rec.rec_type)
 
-    def test_deserialize_a_pet(self):
+    def test_deserialize_a_rec(self):
         """It should de-serialize a Rec"""
         data = RecommendationFactory().serialize()
         rec = Recommendation()
