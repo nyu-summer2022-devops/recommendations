@@ -235,3 +235,14 @@ class TestRecommendationServer(TestCase):
     #     )
     #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    def test_delete_recommendation(self):
+        """ It should Delete a Recommendation """
+        # create a recommendation to update
+        test_rec = self._create_recommendations(1)[0]
+        # delete the recommendation
+
+        response = self.client.delete(f"{BASE_URL}/{test_rec.id}")
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        # try to read the deleted recommendation
+        response = self.client.get(f"{BASE_URL}/{test_rec.id}")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

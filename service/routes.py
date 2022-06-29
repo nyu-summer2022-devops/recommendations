@@ -91,7 +91,7 @@ def list_recommendations():
     return jsonify(message), status.HTTP_200_OK 
 
 ######################################################################
-# UPDATE AN EXISTING PET
+# UPDATE AN EXISTING RECOMMENDATION
 ######################################################################
 @app.route("/recommendations/<int:id>", methods=["PUT"])
 def update_recommendations(id):
