@@ -174,6 +174,13 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(updated_recommendation[PRODUCT_ID], 100)
         self.assertEqual(updated_recommendation[PRODUCT_NAME], "Hat")
 
+        response2 = self.client.put(
+            f"{BASE_URL}/99999",  #non-existing id
+            json=new_rec,
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_delete_recommendation(self):
         """ It should Delete a Recommendation """
         # create a recommendation to update
