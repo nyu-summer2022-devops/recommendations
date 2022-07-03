@@ -22,11 +22,11 @@ logger = logging.getLogger("flask.app")
 # Create the SQLAlchemy object to be initialized later in init_db()
 db = SQLAlchemy()
 
-class Type(enum.IntEnum):
-    CROSS_SELL = 0
-    UP_SELL    = 1
-    ACCESSORY  = 2
-    BUY_WITH   = 3
+class Type(str, enum.Enum):
+    CROSS_SELL = 'CROSS_SELL'
+    UP_SELL    = 'UP_SELL'
+    ACCESSORY  = 'ACCESSORY'
+    BUY_WITH   = 'BUY_WITH'
 
 class DataValidationError(Exception):
     """ Used for an data validation errors when deserializing """
