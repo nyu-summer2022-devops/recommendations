@@ -6,30 +6,31 @@ All of the models are stored in this module
 import enum
 import logging
 
-import idna
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Enum
 
-ID = 'id'
-PRODUCT_ID = 'product_id'
-PRODUCT_NAME = 'product_name'
-REC_ID = 'rec_id'
-REC_NAME = 'rec_name'
-REC_TYPE = 'rec_type'
+ID = "id"
+PRODUCT_ID = "product_id"
+PRODUCT_NAME = "product_name"
+REC_ID = "rec_id"
+REC_NAME = "rec_name"
+REC_TYPE = "rec_type"
 
 logger = logging.getLogger("flask.app")
 
 # Create the SQLAlchemy object to be initialized later in init_db()
 db = SQLAlchemy()
 
+
 class Type(str, enum.Enum):
-    CROSS_SELL = 'CROSS_SELL'
-    UP_SELL    = 'UP_SELL'
-    ACCESSORY  = 'ACCESSORY'
-    BUY_WITH   = 'BUY_WITH'
+    CROSS_SELL = "CROSS_SELL"
+    UP_SELL = "UP_SELL"
+    ACCESSORY = "ACCESSORY"
+    BUY_WITH = "BUY_WITH"
+
 
 class DataValidationError(Exception):
-    """ Used for an data validation errors when deserializing """
+    """Used for an data validation errors when deserializing"""
 
     pass
 
@@ -49,9 +50,11 @@ class Recommendation(db.Model):
     rec_name = db.Column(db.String(256), nullable=False)
     rec_type = db.Column(Enum(Type), nullable=False)
 
-
     def __repr__(self):
-        return "<id=[%s] Recommendation object for %r>" % (self.id, self.product_name)
+        return "<id=[%s] Recommendation object for %r>" % (
+            self.id,
+            self.product_name,
+        )
 
     def create(self):
         """
@@ -72,20 +75,20 @@ class Recommendation(db.Model):
         db.session.commit()
 
     def delete(self):
-        """ Removes a recommendation from the data store """
+        """Removes a recommendation from the data store"""
         logger.info("Deleting %s", self.product_name)
         db.session.delete(self)
         db.session.commit()
 
     def serialize(self):
-        """ Serializes a recommendation into a dictionary """
+        """Serializes a recommendation into a dictionary"""
         return {
-            ID: self.id, 
-            PRODUCT_ID: self.product_id, 
-            PRODUCT_NAME: self.product_name, 
-            REC_ID: self.rec_id, 
-            REC_NAME: self.rec_name, 
-            REC_TYPE: self.rec_type
+            ID: self.id,
+            PRODUCT_ID: self.product_id,
+            PRODUCT_NAME: self.product_name,
+            REC_ID: self.rec_id,
+            REC_NAME: self.rec_name,
+            REC_TYPE: self.rec_type,
         }
 
     def deserialize(self, data):
@@ -106,37 +109,37 @@ class Recommendation(db.Model):
             raise DataValidationError(
                 "Invalid Recommendation: missing " + error.args[0]
             )
-        except TypeError as error:
-            raise DataValidationError(
-                "Invalid Recommendation: body of request contained bad or no data"
-            )
+        # except TypeError as error: // Qiheng what is this for?
+        #     raise DataValidationError(
+        #         "Invalid Recommendation: body of request contained bad or no data"
+        #     )
         return self
 
     @classmethod
     def init_db(cls, app):
-        """ Initializes the database session """
+        """Initializes the database session"""
         logger.info("Initializing database")
         cls.app = app
         # This is where we initialize SQLAlchemy from the Flask app
         db.init_app(app)
         app.app_context().push()
         db.create_all()  # make our sqlalchemy tables
-    
+
     @classmethod
     def drop_db(cls, app):
-        """ Initializes the database session """
+        """Initializes the database session"""
         logger.info("Dropping database")
         db.drop_all()  # drop our sqlalchemy tables
 
     @classmethod
     def all(cls):
-        """ Returns all of the recommendation in the database """
+        """Returns all of the recommendation in the database"""
         logger.info("Processing all recommendation")
         return cls.query.all()
 
     @classmethod
     def find(cls, by_id):
-        """ Finds a Recommendation by it's ID """
+        """Finds a Recommendation by it's ID"""
         logger.info("Processing lookup for id %s ...", by_id)
         return cls.query.get(by_id)
 
@@ -153,7 +156,7 @@ class Recommendation(db.Model):
 
     @classmethod
     def find_by_product_id(cls, product_id):
-        """ Finds a Recommendation by it's product ID """
+        """Finds a Recommendation by it's product ID"""
         logger.info("Processing name query for %s ...", product_id)
         return cls.query.filter(cls.product_id == product_id).first_or_404()
 
@@ -169,7 +172,7 @@ class Recommendation(db.Model):
 
     @classmethod
     def find_by_rec_id(cls, rec_id):
-        """ Finds a Recommendation by it's rec ID """
+        """Finds a Recommendation by it's rec ID"""
         logger.info("Processing name query for %s ...", rec_id)
         return cls.query.filter(cls.rec_id == rec_id).first_or_404()
 
@@ -192,5 +195,3 @@ class Recommendation(db.Model):
         """
         logger.info("Processing name query for %s ...", rec_type)
         return cls.query.filter(cls.rec_type == rec_type)
-
-    
