@@ -1,5 +1,6 @@
 # Recommendations Microservice for a Commerce website
 
+[![Build Status](https://github.com/nyu-summer2022-devops/recommendations/actions/workflows/ci.yml/badge.svg)](https://github.com/nyu-summer2022-devops/recommendations/actions)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/Language-Python-blue.svg)](https://python.org/)
 
@@ -81,6 +82,7 @@ tests/              - test cases package
 ```
 
 ## Recommendation Squad Members
+
 Huang, Brady;
 Kankanala, Meghana;
 Li, Sixian;
