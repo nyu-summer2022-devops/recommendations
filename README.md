@@ -1,6 +1,7 @@
 # Recommendations Microservice for a Commerce website
 
 [![Build Status](https://github.com/nyu-summer2022-devops/recommendations/actions/workflows/ci.yml/badge.svg)](https://github.com/nyu-summer2022-devops/recommendations/actions)
+[![codecov](https://codecov.io/gh/nyu-summer2022-devops/recommendations/branch/master/graph/badge.svg?token=2QOVHKZ67W)](https://codecov.io/gh/nyu-summer2022-devops/recommendations)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/Language-Python-blue.svg)](https://python.org/)
 
