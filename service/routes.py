@@ -159,6 +159,7 @@ def like_recommendations(id):
         )
 
     rec.deserialize(request.get_json())
+    rec.id = id
     rec.like_num += 1
     rec.update()
 
