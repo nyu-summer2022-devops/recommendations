@@ -196,7 +196,7 @@ def unlike_recommendations(id):
 
     app.logger.info("Recommendation with ID [%s] is unliked.", rec.id)
     return jsonify(rec.serialize()), status.HTTP_200_OK
-    
+
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
