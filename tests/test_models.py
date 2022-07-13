@@ -184,15 +184,13 @@ class TestRecommendationModel(unittest.TestCase):
         rec.id = None
         rec.create()
         self.assertIsNotNone(rec.id)
-        # found_rec = Recommendation.find(rec.id) // Sean
-        # Change it and save it
+
         rec.product_name = "foo"
         original_id = rec.id
         rec.like()
         self.assertEqual(original_id, rec.id)
         self.assertEqual(rec.product_name, "foo")
-        # Fetch it back and make sure the id hasn't changed
-        # But the data did change
+
         recs = Recommendation.all()
         self.assertEqual(len(recs), 1)
         self.assertEqual(recs[0].id, original_id)
@@ -204,6 +202,32 @@ class TestRecommendationModel(unittest.TestCase):
         logging.debug(rec)
         rec.id = None
         self.assertRaises(DataValidationError, rec.like)
+
+    def test_unlike_a_rec(self):
+        """It should Unkike a Rec"""
+        rec = RecommendationFactory()
+        logging.debug(rec)
+        rec.id = None
+        rec.create()
+        self.assertIsNotNone(rec.id)
+
+        rec.product_name = "foo"
+        original_id = rec.id
+        rec.unlike()
+        self.assertEqual(original_id, rec.id)
+        self.assertEqual(rec.product_name, "foo")
+
+        recs = Recommendation.all()
+        self.assertEqual(len(recs), 1)
+        self.assertEqual(recs[0].id, original_id)
+        self.assertEqual(recs[0].product_name, "foo")
+
+    def test_unlike_no_id(self):
+        """It should not Unlike a Rec with no id"""
+        rec = RecommendationFactory()
+        logging.debug(rec)
+        rec.id = None
+        self.assertRaises(DataValidationError, rec.unlike)
 
     def test_list_all_recs(self):
         """It should List all recommendations in the database"""

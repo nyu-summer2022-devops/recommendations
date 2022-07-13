@@ -89,6 +89,13 @@ class Recommendation(db.Model):
             raise DataValidationError("Update called with empty ID field")
         db.session.commit()
 
+    def unlike(self):
+        """Unlike a recommendation from the data store"""
+        logger.info("Saving %s", self.product_name)
+        if not self.id:
+            raise DataValidationError("Update called with empty ID field")
+        db.session.commit()
+
     def serialize(self):
         """Serializes a recommendation into a dictionary"""
         return {
