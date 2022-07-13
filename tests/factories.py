@@ -18,3 +18,4 @@ class RecommendationFactory(factory.Factory):
     rec_type = FuzzyChoice(
         choices=[Type.CROSS_SELL, Type.UP_SELL, Type.ACCESSORY, Type.BUY_WITH]
     )
+    like_num = factory.Sequence(lambda n: n)

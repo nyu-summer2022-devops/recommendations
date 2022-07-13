@@ -14,6 +14,7 @@ from service.models import (
     REC_ID,
     REC_NAME,
     REC_TYPE,
+    LIKE_NUM,
     DataValidationError,
     Recommendation,
     Type,
@@ -115,6 +116,7 @@ class TestRecommendationModel(unittest.TestCase):
             rec_id=2,
             rec_name="baz",
             rec_type=Type.CROSS_SELL,
+            like_num=0,
         )
         recs = Recommendation.all()
         self.assertEqual(len(recs), 1)

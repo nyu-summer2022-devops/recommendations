@@ -17,6 +17,7 @@ from service.models import (
     REC_ID,
     REC_NAME,
     REC_TYPE,
+    LIKE_NUM,
     Recommendation,
     db,
 )
