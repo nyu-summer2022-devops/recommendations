@@ -197,3 +197,19 @@ class Recommendation(db.Model):
         """
         logger.info("Processing name query for %s ...", rec_type)
         return cls.query.filter(cls.rec_type == rec_type)
+
+    @classmethod
+    def find_by_params(cls, product_id, rec_type):
+        """ Returns all  recommendation with specific parameters
+        Args:
+            :param product_id: query by product_id
+            :param rec_type: query by rec_type
+        """
+        logger.info("Processing query for product_id: %s, ""rec_type: %s ...",
+                        product_id, rec_type)
+        result = cls.query
+        if product_id:
+            result = result.filter(cls.product_id == product_id)
+        if rec_type:
+            result = result.filter(cls.rec_type == rec_type)
+        return result.all()
