@@ -157,7 +157,7 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         data = response.get_json()
         logging.debug("Response data = %s", data)
-        self.assertIn("was not found", data["message"])    
+        self.assertIn("was not found", data["message"])
 
     def test_update_recommendation(self):
         """It should Update an existing Recommendation"""

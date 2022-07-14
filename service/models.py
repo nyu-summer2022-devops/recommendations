@@ -205,8 +205,9 @@ class Recommendation(db.Model):
             :param product_id: query by product_id
             :param rec_type: query by rec_type
         """
-        logger.info("Processing query for product_id: %s, ""rec_type: %s ...",
-                        product_id, rec_type)
+        logger.info("Processing query for product_id: %s, "
+                    "rec_type: %s ...",
+                    product_id, rec_type)
         result = cls.query
         if product_id:
             result = result.filter(cls.product_id == product_id)
