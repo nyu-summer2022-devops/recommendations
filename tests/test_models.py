@@ -7,18 +7,9 @@ import os
 import unittest
 
 from flask import Flask
-from service.models import (
-    ID,
-    PRODUCT_ID,
-    PRODUCT_NAME,
-    REC_ID,
-    REC_NAME,
-    REC_TYPE,
-    DataValidationError,
-    Recommendation,
-    Type,
-    db,
-)
+from service.models import (ID, PRODUCT_ID, PRODUCT_NAME, REC_ID, REC_NAME,
+                            REC_TYPE, DataValidationError, Recommendation,
+                            Type, db)
 from werkzeug.exceptions import NotFound
 
 from tests.factories import RecommendationFactory
@@ -49,8 +40,8 @@ class TestRecommendationModel(unittest.TestCase):
         """This runs once after the entire test suite"""
         basedir = os.path.abspath(os.path.dirname(__file__))
         db.session.close()
-        if os.path.exists("sqlite:///" + os.path.join(basedir, "database.db")):
-            os.remove("sqlite:///" + os.path.join(basedir, "database.db"))
+        if os.path.exists(os.path.join(basedir, "database.db")):
+            os.remove(os.path.join(basedir, "database.db"))
 
     def setUp(self):
         """This runs before each test"""
