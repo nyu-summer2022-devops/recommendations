@@ -10,16 +10,8 @@ import os
 from unittest import TestCase
 
 from service import app
-from service.models import (
-    ID,
-    PRODUCT_ID,
-    PRODUCT_NAME,
-    REC_ID,
-    REC_NAME,
-    REC_TYPE,
-    Recommendation,
-    db,
-)
+from service.models import (ID, PRODUCT_ID, PRODUCT_NAME, REC_ID, REC_NAME,
+                            REC_TYPE, Recommendation, db)
 from service.routes import init_db
 from service.utils import status  # HTTP Status Codes
 
@@ -52,8 +44,8 @@ class TestRecommendationServer(TestCase):
         """This runs once after the entire test suite"""
         basedir = os.path.abspath(os.path.dirname(__file__))
         db.session.close()
-        if os.path.exists("sqlite:///" + os.path.join(basedir, "database.db")):
-            os.remove("sqlite:///" + os.path.join(basedir, "database.db"))
+        if os.path.exists(os.path.join(basedir, "database.db")):
+            os.remove(os.path.join(basedir, "database.db"))
 
     def setUp(self):
         """This runs before each test"""
