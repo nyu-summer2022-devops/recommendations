@@ -139,6 +139,65 @@ def delete_recommendations(id):
 
 
 ######################################################################
+# Like A RECOMMENDATION
+######################################################################
+@app.route("/recommendations/<int:id>/like", methods=["PUT"])
+def like_recommendations(id):
+    """
+    Like a Recommendation
+
+    This endpoint will like a Recommendation based on the id
+    """
+    app.logger.info("Request to like Recommendation with id: %s", id)
+    check_content_type("application/json")
+
+    rec = Recommendation.find(id)
+    if not rec:
+        abort(
+            status.HTTP_404_NOT_FOUND,
+            f"Recommendation with id '{id}' was not found.",
+        )
+
+    rec.deserialize(request.get_json())
+    rec.id = id
+    rec.like_num += 1
+    rec.update()
+
+    app.logger.info("Recommendation with ID [%s] is liked.", rec.id)
+    return jsonify(rec.serialize()), status.HTTP_200_OK
+
+
+######################################################################
+# Unlike A RECOMMENDATION
+######################################################################
+@app.route("/recommendations/<int:id>/unlike", methods=["PUT"])
+def unlike_recommendations(id):
+    """
+    Unlike a Recommendation
+
+    This endpoint will unlike a Recommendation based on the id
+    """
+    app.logger.info("Request to unlike Recommendation with id: %s", id)
+    check_content_type("application/json")
+
+    rec = Recommendation.find(id)
+    if not rec:
+        abort(
+            status.HTTP_404_NOT_FOUND,
+            f"Recommendation with id '{id}' was not found.",
+        )
+
+    rec.deserialize(request.get_json())
+    rec.id = id
+
+    if rec.like_num >= 1:
+        rec.like_num -= 1
+    rec.update()
+
+    app.logger.info("Recommendation with ID [%s] is unliked.", rec.id)
+    return jsonify(rec.serialize()), status.HTTP_200_OK
+
+######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
 

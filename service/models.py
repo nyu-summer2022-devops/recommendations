@@ -15,6 +15,7 @@ PRODUCT_NAME = "product_name"
 REC_ID = "rec_id"
 REC_NAME = "rec_name"
 REC_TYPE = "rec_type"
+LIKE_NUM = "like_num"
 
 logger = logging.getLogger("flask.app")
 
@@ -49,6 +50,7 @@ class Recommendation(db.Model):
     rec_id = db.Column(db.Integer, unique=True, nullable=False)
     rec_name = db.Column(db.String(256), nullable=False)
     rec_type = db.Column(Enum(Type), nullable=False)
+    like_num = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
         return "<id=[%s] Recommendation object for %r>" % (
@@ -80,6 +82,20 @@ class Recommendation(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+    def like(self):
+        """Like a recommendation from the data store"""
+        logger.info("Saving %s", self.product_name)
+        if not self.id:
+            raise DataValidationError("Update called with empty ID field")
+        db.session.commit()
+
+    def unlike(self):
+        """Unlike a recommendation from the data store"""
+        logger.info("Saving %s", self.product_name)
+        if not self.id:
+            raise DataValidationError("Update called with empty ID field")
+        db.session.commit()
+
     def serialize(self):
         """Serializes a recommendation into a dictionary"""
         return {
@@ -89,6 +105,7 @@ class Recommendation(db.Model):
             REC_ID: self.rec_id,
             REC_NAME: self.rec_name,
             REC_TYPE: self.rec_type,
+            LIKE_NUM: self.like_num,
         }
 
     def deserialize(self, data):
@@ -105,6 +122,7 @@ class Recommendation(db.Model):
             self.rec_id = data[REC_ID]
             self.rec_name = data[REC_NAME]
             self.rec_type = data[REC_TYPE]
+            self.like_num = data[LIKE_NUM]
         except KeyError as error:
             raise DataValidationError(
                 "Invalid Recommendation: missing " + error.args[0]
