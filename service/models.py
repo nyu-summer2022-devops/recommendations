@@ -45,9 +45,9 @@ class Recommendation(db.Model):
 
     # Table Schema
     id = db.Column(db.Integer, primary_key=True)
-    product_id = db.Column(db.Integer, unique=True, nullable=False)
+    product_id = db.Column(db.Integer, nullable=False)
     product_name = db.Column(db.String(256), nullable=False)
-    rec_id = db.Column(db.Integer, unique=True, nullable=False)
+    rec_id = db.Column(db.Integer, nullable=False)
     rec_name = db.Column(db.String(256), nullable=False)
     rec_type = db.Column(Enum(Type), nullable=False)
     like_num = db.Column(db.Integer, nullable=False)
