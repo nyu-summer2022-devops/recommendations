@@ -383,3 +383,25 @@ class TestRecommendationModel(unittest.TestCase):
     def test_find_or_404_not_found(self):
         """It should return 404 not found"""
         self.assertRaises(NotFound, Recommendation.find_or_404, 0)
+
+    def test_find_by_params(self):
+        """It should find recommendation by Product id and recommendation type"""
+        rec = Recommendation(
+            id=1,
+            product_id=1,
+            product_name="foo",
+            rec_id=2,
+            rec_name="baz",
+            rec_type=Type.CROSS_SELL,
+        )
+        rec.create()
+        self.assertEqual(len(Recommendation.all()), 1)
+        result = Recommendation.find_by_params(rec.product_id, rec.rec_type)
+        self.assertEqual(len(result), 1)
+        self.assertIsNot(result, None)
+        self.assertEqual(rec.id, result[0].id)
+        self.assertEqual(rec.product_id, result[0].product_id)
+        self.assertEqual(rec.product_name, result[0].product_name)
+        self.assertEqual(rec.rec_id, result[0].rec_id)
+        self.assertEqual(rec.rec_name, result[0].rec_name)
+        self.assertEqual(rec.rec_type, result[0].rec_type)

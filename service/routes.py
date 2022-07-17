@@ -87,7 +87,17 @@ def list_recommendations():
     This endpoint will return all the recommendations available
     """
     app.logger.info("Request to list all the recommendations")
-    rec = Recommendation.all()
+
+    rec = []
+    product_id = request.args.get('product_id')
+    rec_type = request.args.get('rec_type')
+    rec = Recommendation.find_by_params(product_id, rec_type)
+
+    if not rec:
+        abort(
+            status.HTTP_404_NOT_FOUND,
+            "Recommendation was not found.",
+        )
     message = [recommendation.serialize() for recommendation in rec]
     return jsonify(message), status.HTTP_200_OK
 

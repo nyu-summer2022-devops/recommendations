@@ -154,6 +154,14 @@ class TestRecommendationServer(TestCase):
         data = response.get_json()
         self.assertEqual(data[0]["product_name"], test_rec.product_name)
 
+    def test_list_recommendation_not_found(self):
+        """It should not get recommendations thats not found"""
+        response = self.client.get(f"{BASE_URL}")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        data = response.get_json()
+        logging.debug("Response data = %s", data)
+        self.assertIn("was not found", data["message"])
+
     def test_update_recommendation(self):
         """It should Update an existing Recommendation"""
         # create a recommendation to update
