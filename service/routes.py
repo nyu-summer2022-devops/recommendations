@@ -87,7 +87,17 @@ def list_recommendations():
     This endpoint will return all the recommendations available
     """
     app.logger.info("Request to list all the recommendations")
-    rec = Recommendation.all()
+
+    rec = []
+    product_id = request.args.get('product_id')
+    rec_type = request.args.get('rec_type')
+    rec = Recommendation.find_by_params(product_id, rec_type)
+
+    if not rec:
+        abort(
+            status.HTTP_404_NOT_FOUND,
+            "Recommendation was not found.",
+        )
     message = [recommendation.serialize() for recommendation in rec]
     return jsonify(message), status.HTTP_200_OK
 
@@ -137,6 +147,65 @@ def delete_recommendations(id):
     app.logger.info("Recommendation with ID [%s] delete complete.", id)
     return "", status.HTTP_204_NO_CONTENT
 
+
+######################################################################
+# Like A RECOMMENDATION
+######################################################################
+@app.route("/recommendations/<int:id>/like", methods=["PUT"])
+def like_recommendations(id):
+    """
+    Like a Recommendation
+
+    This endpoint will like a Recommendation based on the id
+    """
+    app.logger.info("Request to like Recommendation with id: %s", id)
+    check_content_type("application/json")
+
+    rec = Recommendation.find(id)
+    if not rec:
+        abort(
+            status.HTTP_404_NOT_FOUND,
+            f"Recommendation with id '{id}' was not found.",
+        )
+
+    rec.deserialize(request.get_json())
+    rec.id = id
+    rec.like_num += 1
+    rec.update()
+
+    app.logger.info("Recommendation with ID [%s] is liked.", rec.id)
+    return jsonify(rec.serialize()), status.HTTP_200_OK
+
+
+######################################################################
+# Unlike A RECOMMENDATION
+######################################################################
+@app.route("/recommendations/<int:id>/unlike", methods=["PUT"])
+def unlike_recommendations(id):
+    """
+    Unlike a Recommendation
+
+    This endpoint will unlike a Recommendation based on the id
+    """
+    app.logger.info("Request to unlike Recommendation with id: %s", id)
+    check_content_type("application/json")
+
+    rec = Recommendation.find(id)
+    if not rec:
+        abort(
+            status.HTTP_404_NOT_FOUND,
+            f"Recommendation with id '{id}' was not found.",
+        )
+
+    rec.deserialize(request.get_json())
+    rec.id = id
+
+    if rec.like_num >= 1:
+        rec.like_num -= 1
+    rec.update()
+
+    app.logger.info("Recommendation with ID [%s] is unliked.", rec.id)
+    return jsonify(rec.serialize()), status.HTTP_200_OK
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S

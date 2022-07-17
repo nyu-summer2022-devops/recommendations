@@ -10,8 +10,19 @@ import os
 from unittest import TestCase
 
 from service import app
-from service.models import (ID, PRODUCT_ID, PRODUCT_NAME, REC_ID, REC_NAME,
-                            REC_TYPE, Recommendation, db)
+
+from service.models import (
+    ID,
+    PRODUCT_ID,
+    PRODUCT_NAME,
+    REC_ID,
+    REC_NAME,
+    REC_TYPE,
+    LIKE_NUM,
+    Recommendation,
+    db,
+)
+
 from service.routes import init_db
 from service.utils import status  # HTTP Status Codes
 
@@ -106,6 +117,7 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(new_rec[REC_ID], test_rec.rec_id)
         self.assertEqual(new_rec[REC_NAME], test_rec.rec_name)
         self.assertEqual(new_rec[REC_TYPE], test_rec.rec_type)
+        self.assertEqual(new_rec[LIKE_NUM], test_rec.like_num)
 
         # Check that the location header was correct
         response = self.client.get(location, content_type=CONTENT_TYPE_JSON)
@@ -116,6 +128,7 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(new_rec[REC_ID], test_rec.rec_id)
         self.assertEqual(new_rec[REC_NAME], test_rec.rec_name)
         self.assertEqual(new_rec[REC_TYPE], test_rec.rec_type)
+        self.assertEqual(new_rec[LIKE_NUM], test_rec.like_num)
 
     def test_get_recommendation(self):
         """It should Get a single Recommendation"""
@@ -142,6 +155,14 @@ class TestRecommendationServer(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.get_json()
         self.assertEqual(data[0]["product_name"], test_rec.product_name)
+
+    def test_list_recommendation_not_found(self):
+        """It should not get recommendations thats not found"""
+        response = self.client.get(f"{BASE_URL}")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        data = response.get_json()
+        logging.debug("Response data = %s", data)
+        self.assertIn("was not found", data["message"])
 
     def test_update_recommendation(self):
         """It should Update an existing Recommendation"""
@@ -180,6 +201,31 @@ class TestRecommendationServer(TestCase):
         # )
         # self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_update_recommendation_not_found(self):
+        """It should not Update a Recommendation thats not found"""
+        # create a recommendation to update
+        test_rec = RecommendationFactory()
+        logging.debug("Test Recommendation: %s", test_rec.serialize())
+        response = self.client.post(
+            BASE_URL, json=test_rec.serialize(), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # update the recommendation
+        new_rec = response.get_json()
+        new_rec[PRODUCT_NAME] = "Hat"
+        new_rec[PRODUCT_ID] = 100
+        logging.debug("New Recommendation: %s", new_rec)
+        response = self.client.put(
+            f"{BASE_URL}/0",
+            json=new_rec,
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        data = response.get_json()
+        logging.debug("Response data = %s", data)
+        self.assertIn("was not found", data["message"])
+
     def test_delete_recommendation(self):
         """It should Delete a Recommendation"""
         # create a recommendation to update
@@ -191,6 +237,115 @@ class TestRecommendationServer(TestCase):
         # try to read the deleted recommendation
         response = self.client.get(f"{BASE_URL}/{test_rec.id}")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_like_recommendation(self):
+        """It should Like an existing Recommendation"""
+        # create a recommendation to update
+        test_rec = RecommendationFactory()
+        logging.debug("Test Recommendation: %s", test_rec.serialize())
+        response = self.client.post(
+            BASE_URL, json=test_rec.serialize(), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # update the recommendation
+        new_rec = response.get_json()
+        new_rec[PRODUCT_NAME] = "Hat"
+        new_rec[PRODUCT_ID] = 100
+        new_rec[LIKE_NUM] = 10
+        logging.debug("New Recommendation: %s", new_rec)
+        response = self.client.put(
+            f"{BASE_URL}/{new_rec[ID]}/like",
+            json=new_rec,
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        updated_recommendation = response.get_json()
+        self.assertEqual(updated_recommendation[ID], new_rec[ID])
+        self.assertEqual(updated_recommendation[PRODUCT_ID], 100)
+        self.assertEqual(updated_recommendation[PRODUCT_NAME], "Hat")
+        self.assertEqual(updated_recommendation[LIKE_NUM], new_rec[LIKE_NUM] + 1)
+
+    def test_like_recommendation_not_found(self):
+        """It should not Like a Recommendation thats not found"""
+        # create a recommendation to update
+        test_rec = RecommendationFactory()
+        logging.debug("Test Recommendation: %s", test_rec.serialize())
+        response = self.client.post(
+            BASE_URL, json=test_rec.serialize(), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # update the recommendation
+        new_rec = response.get_json()
+        new_rec[PRODUCT_NAME] = "Hat"
+        new_rec[PRODUCT_ID] = 100
+        new_rec[LIKE_NUM] = 10
+        logging.debug("New Recommendation: %s", new_rec)
+        response = self.client.put(
+            f"{BASE_URL}/0/like",
+            json=new_rec,
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        data = response.get_json()
+        logging.debug("Response data = %s", data)
+        self.assertIn("was not found", data["message"])
+
+    def test_unlike_recommendation(self):
+        """It should Unlike an existing Recommendation"""
+        # create a recommendation to update
+        test_rec = RecommendationFactory()
+        logging.debug("Test Recommendation: %s", test_rec.serialize())
+        response = self.client.post(
+            BASE_URL, json=test_rec.serialize(), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # update the recommendation
+        new_rec = response.get_json()
+        new_rec[PRODUCT_NAME] = "Hat"
+        new_rec[PRODUCT_ID] = 100
+        new_rec[LIKE_NUM] = 10
+        logging.debug("New Recommendation: %s", new_rec)
+        response = self.client.put(
+            f"{BASE_URL}/{new_rec[ID]}/unlike",
+            json=new_rec,
+            content_type=CONTENT_TYPE_JSON,
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        updated_recommendation = response.get_json()
+        self.assertEqual(updated_recommendation[ID], new_rec[ID])
+        self.assertEqual(updated_recommendation[PRODUCT_ID], 100)
+        self.assertEqual(updated_recommendation[PRODUCT_NAME], "Hat")
+        self.assertEqual(updated_recommendation[LIKE_NUM], new_rec[LIKE_NUM] - 1)
+
+    def test_unlike_recommendation_not_found(self):
+        """It should not Unlike a Recommendation thats not found"""
+        # create a recommendation to update
+        test_rec = RecommendationFactory()
+        logging.debug("Test Recommendation: %s", test_rec.serialize())
+        response = self.client.post(
+            BASE_URL, json=test_rec.serialize(), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # update the recommendation
+        new_rec = response.get_json()
+        new_rec[PRODUCT_NAME] = "Hat"
+        new_rec[PRODUCT_ID] = 100
+        new_rec[LIKE_NUM] = 10
+        logging.debug("New Recommendation: %s", new_rec)
+        response = self.client.put(
+            f"{BASE_URL}/0/unlike",
+            json=new_rec,
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        data = response.get_json()
+        logging.debug("Response data = %s", data)
+        self.assertIn("was not found", data["message"])
 
     def test_create_recommendation_with_id(self):
         """It should return 405 method not allowed error"""

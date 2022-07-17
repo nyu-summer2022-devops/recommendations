@@ -7,9 +7,21 @@ import os
 import unittest
 
 from flask import Flask
-from service.models import (ID, PRODUCT_ID, PRODUCT_NAME, REC_ID, REC_NAME,
-                            REC_TYPE, DataValidationError, Recommendation,
-                            Type, db)
+
+from service.models import (
+    ID,
+    PRODUCT_ID,
+    PRODUCT_NAME,
+    REC_ID,
+    REC_NAME,
+    REC_TYPE,
+    LIKE_NUM,
+    DataValidationError,
+    Recommendation,
+    Type,
+    db,
+)
+
 from werkzeug.exceptions import NotFound
 
 from tests.factories import RecommendationFactory
@@ -64,6 +76,7 @@ class TestRecommendationModel(unittest.TestCase):
             rec_id=2,
             rec_name="bar",
             rec_type=Type.UP_SELL,
+            like_num=0,
         )
         self.assertEqual(
             str(rec), "<id=[None] Recommendation object for 'foo'>"
@@ -75,12 +88,14 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(rec.rec_id, 2)
         self.assertEqual(rec.rec_name, "bar")
         self.assertEqual(rec.rec_type, Type.UP_SELL)
+        self.assertEqual(rec.like_num, 0)
         rec = Recommendation(
             product_id=1,
             product_name="foo",
             rec_id=2,
             rec_name="baz",
             rec_type=Type.CROSS_SELL,
+            like_num=0,
         )
         self.assertEqual(rec.rec_name, "baz")
         self.assertEqual(rec.rec_type, Type.CROSS_SELL)
@@ -95,6 +110,7 @@ class TestRecommendationModel(unittest.TestCase):
             rec_id=2,
             rec_name="bar",
             rec_type=Type.UP_SELL,
+            like_num=0,
         )
         self.assertTrue(rec is not None)
         self.assertEqual(rec.id, None)
@@ -106,6 +122,7 @@ class TestRecommendationModel(unittest.TestCase):
             rec_id=2,
             rec_name="baz",
             rec_type=Type.CROSS_SELL,
+            like_num=0,
         )
         recs = Recommendation.all()
         self.assertEqual(len(recs), 1)
@@ -162,6 +179,58 @@ class TestRecommendationModel(unittest.TestCase):
         rec.delete()
         self.assertEqual(len(Recommendation.all()), 0)
 
+    def test_like_a_rec(self):
+        """It should Like a Rec"""
+        rec = RecommendationFactory()
+        logging.debug(rec)
+        rec.id = None
+        rec.create()
+        self.assertIsNotNone(rec.id)
+
+        rec.product_name = "foo"
+        original_id = rec.id
+        rec.like()
+        self.assertEqual(original_id, rec.id)
+        self.assertEqual(rec.product_name, "foo")
+
+        recs = Recommendation.all()
+        self.assertEqual(len(recs), 1)
+        self.assertEqual(recs[0].id, original_id)
+        self.assertEqual(recs[0].product_name, "foo")
+
+    def test_like_no_id(self):
+        """It should not Like a Rec with no id"""
+        rec = RecommendationFactory()
+        logging.debug(rec)
+        rec.id = None
+        self.assertRaises(DataValidationError, rec.like)
+
+    def test_unlike_a_rec(self):
+        """It should Unkike a Rec"""
+        rec = RecommendationFactory()
+        logging.debug(rec)
+        rec.id = None
+        rec.create()
+        self.assertIsNotNone(rec.id)
+
+        rec.product_name = "foo"
+        original_id = rec.id
+        rec.unlike()
+        self.assertEqual(original_id, rec.id)
+        self.assertEqual(rec.product_name, "foo")
+
+        recs = Recommendation.all()
+        self.assertEqual(len(recs), 1)
+        self.assertEqual(recs[0].id, original_id)
+        self.assertEqual(recs[0].product_name, "foo")
+
+    def test_unlike_no_id(self):
+        """It should not Unlike a Rec with no id"""
+        rec = RecommendationFactory()
+        logging.debug(rec)
+        rec.id = None
+        self.assertRaises(DataValidationError, rec.unlike)
+
     def test_list_all_recs(self):
         """It should List all recommendations in the database"""
         recs = Recommendation.all()
@@ -189,6 +258,7 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(data[REC_NAME], rec.rec_name)
         self.assertIn(REC_TYPE, data)
         self.assertEqual(data[REC_TYPE], rec.rec_type)
+        self.assertEqual(data[LIKE_NUM], rec.like_num)
 
     def test_deserialize_a_rec(self):
         """It should de-serialize a Rec"""
@@ -202,6 +272,7 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertEqual(rec.rec_id, data[REC_ID])
         self.assertEqual(rec.rec_name, data[REC_NAME])
         self.assertEqual(rec.rec_type, data[REC_TYPE])
+        self.assertEqual(rec.like_num, data[LIKE_NUM])
 
     def test_deserialize_missing_data(self):
         """It should not deserialize a Recommendation with missing data"""
@@ -314,3 +385,25 @@ class TestRecommendationModel(unittest.TestCase):
     def test_find_or_404_not_found(self):
         """It should return 404 not found"""
         self.assertRaises(NotFound, Recommendation.find_or_404, 0)
+
+    def test_find_by_params(self):
+        """It should find recommendation by Product id and recommendation type"""
+        rec = Recommendation(
+            id=1,
+            product_id=1,
+            product_name="foo",
+            rec_id=2,
+            rec_name="baz",
+            rec_type=Type.CROSS_SELL,
+        )
+        rec.create()
+        self.assertEqual(len(Recommendation.all()), 1)
+        result = Recommendation.find_by_params(rec.product_id, rec.rec_type)
+        self.assertEqual(len(result), 1)
+        self.assertIsNot(result, None)
+        self.assertEqual(rec.id, result[0].id)
+        self.assertEqual(rec.product_id, result[0].product_id)
+        self.assertEqual(rec.product_name, result[0].product_name)
+        self.assertEqual(rec.rec_id, result[0].rec_id)
+        self.assertEqual(rec.rec_name, result[0].rec_name)
+        self.assertEqual(rec.rec_type, result[0].rec_type)
