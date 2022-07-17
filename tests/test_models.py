@@ -395,6 +395,7 @@ class TestRecommendationModel(unittest.TestCase):
             rec_id=2,
             rec_name="baz",
             rec_type=Type.CROSS_SELL,
+            like_num=0
         )
         rec.create()
         self.assertEqual(len(Recommendation.all()), 1)
