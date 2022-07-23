@@ -14,6 +14,13 @@ from .utils import status  # HTTP Status Codes
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
 # variety of backends including SQLite, MySQL, and PostgreSQL
 
+############################################################
+# Health Endpoint
+############################################################
+@app.route("/health")
+def health():
+    """Health Status"""
+    return jsonify(dict(status="OK")), status.HTTP_200_OK
 
 ######################################################################
 # GET INDEX

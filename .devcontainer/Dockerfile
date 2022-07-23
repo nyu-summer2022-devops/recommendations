@@ -8,7 +8,7 @@ RUN apt-get update && \
     apt-get clean -y
 
 # Create a user for development
-ARG USERNAME=devops
+ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
@@ -24,12 +24,19 @@ RUN apt-get install -y gcc libpq-dev
 
 # Set up the Python development environment
 WORKDIR /app
-RUN python -m pip install --upgrade pip wheel
+RUN python -m pip install --upgrade pip && \
+    pip install --upgrade wheel \
+    && chown -R $USERNAME:$USERNAME /home/$USERNAME
 
-EXPOSE 8000
+ENV PORT 8080
+EXPOSE $PORT
 
 # Enable color terminal for docker exec bash
 ENV TERM=xterm-256color
 
 # Become a regular user
 USER $USERNAME
+
+# Install user mode tools
+COPY .devcontainer/scripts/install-tools.sh /tmp/
+RUN cd /tmp; bash ./install-tools.sh
