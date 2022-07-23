@@ -6,6 +6,7 @@ Describe what your service does here
 from flask import abort, jsonify, make_response, request, url_for
 
 from service.models import Recommendation
+from flask.logging import create_logger
 
 # Import Flask application
 from . import app
@@ -13,6 +14,7 @@ from .utils import status  # HTTP Status Codes
 
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
 # variety of backends including SQLite, MySQL, and PostgreSQL
+
 
 ############################################################
 # Health Endpoint
@@ -22,13 +24,14 @@ def health():
     """Health Status"""
     return jsonify(dict(status="OK")), status.HTTP_200_OK
 
+
 ######################################################################
 # GET INDEX
 ######################################################################
 @app.route("/")
 def index():
     """Root URL response"""
-    app.logger.info("Request for Root URL ")
+    create_logger(app).info("Request for Root URL ")
     return (
         jsonify(
             name="Recommendations REST API Service",
@@ -48,10 +51,10 @@ def create_recommendations():
     Creates a Recommendation
     This endpoint will create a Recommendation based the data in the body this is posted
     """
-    app.logger.info("Request to create a rec")
+    create_logger(app).info("Request to create a rec")
     check_content_type("application/json")
     rec = Recommendation()
-    app.logger.info(request.get_json())
+    create_logger(app).info(request.get_json())
     rec.deserialize(request.get_json())
     rec.create()
     message = rec.serialize()
@@ -71,7 +74,7 @@ def get_recommendations(id):
 
     This endpoint will return a Recommendation based on it's id
     """
-    app.logger.info("Request for Recommendation with id: %s", id)
+    create_logger(app).info("Request for Recommendation with id: %s", id)
     rec = Recommendation.find(id)
     if not rec:
         abort(
@@ -79,7 +82,7 @@ def get_recommendations(id):
             f"Recommendation with id '{id}' was not found.",
         )
 
-    app.logger.info("Returning recommendation: %s", rec.product_name)
+    create_logger(app).info("Returning recommendation: %s", rec.product_name)
     return jsonify(rec.serialize()), status.HTTP_200_OK
 
 
@@ -93,7 +96,7 @@ def list_recommendations():
 
     This endpoint will return all the recommendations available
     """
-    app.logger.info("Request to list all the recommendations")
+    create_logger(app).info("Request to list all the recommendations")
 
     rec = []
     product_id = request.args.get('product_id')
@@ -119,7 +122,7 @@ def update_recommendations(id):
 
     This endpoint will update a Recommendation based the body that is posted
     """
-    app.logger.info("Request to update Recommendation with id: %s", id)
+    create_logger(app).info("Request to update Recommendation with id: %s", id)
     check_content_type("application/json")
 
     rec = Recommendation.find(id)
@@ -133,7 +136,7 @@ def update_recommendations(id):
     rec.id = id
     rec.update()
 
-    app.logger.info("Recommendation with ID [%s] updated.", rec.id)
+    create_logger(app).info("Recommendation with ID [%s] updated.", rec.id)
     return jsonify(rec.serialize()), status.HTTP_200_OK
 
 
@@ -146,12 +149,12 @@ def delete_recommendations(id):
     Delete a Recommendation
     This endpoint will delete a Recommendation based the id specified in the path
     """
-    app.logger.info("Request to delete recommendation with id: %s", id)
+    create_logger(app).info("Request to delete recommendation with id: %s", id)
     rec = Recommendation.find(id)
     if rec:
         rec.delete()
 
-    app.logger.info("Recommendation with ID [%s] delete complete.", id)
+    create_logger(app).info("Recommendation with ID [%s] delete complete.", id)
     return "", status.HTTP_204_NO_CONTENT
 
 
@@ -165,7 +168,7 @@ def like_recommendations(id):
 
     This endpoint will like a Recommendation based on the id
     """
-    app.logger.info("Request to like Recommendation with id: %s", id)
+    create_logger(app).info("Request to like Recommendation with id: %s", id)
     check_content_type("application/json")
 
     rec = Recommendation.find(id)
@@ -180,7 +183,7 @@ def like_recommendations(id):
     rec.like_num += 1
     rec.update()
 
-    app.logger.info("Recommendation with ID [%s] is liked.", rec.id)
+    create_logger(app).info("Recommendation with ID [%s] is liked.", rec.id)
     return jsonify(rec.serialize()), status.HTTP_200_OK
 
 
@@ -194,7 +197,7 @@ def unlike_recommendations(id):
 
     This endpoint will unlike a Recommendation based on the id
     """
-    app.logger.info("Request to unlike Recommendation with id: %s", id)
+    create_logger(app).info("Request to unlike Recommendation with id: %s", id)
     check_content_type("application/json")
 
     rec = Recommendation.find(id)
@@ -211,7 +214,7 @@ def unlike_recommendations(id):
         rec.like_num -= 1
     rec.update()
 
-    app.logger.info("Recommendation with ID [%s] is unliked.", rec.id)
+    create_logger(app).info("Recommendation with ID [%s] is unliked.", rec.id)
     return jsonify(rec.serialize()), status.HTTP_200_OK
 
 ######################################################################
@@ -230,7 +233,7 @@ def check_content_type(media_type):
     content_type = request.headers.get("Content-Type")
     if content_type and content_type == media_type:
         return
-    app.logger.error("Invalid Content-Type: %s", content_type)
+    create_logger(app).error("Invalid Content-Type: %s", content_type)
     abort(
         status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
         "Content-Type must be {}".format(media_type),

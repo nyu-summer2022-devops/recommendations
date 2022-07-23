@@ -28,6 +28,8 @@ from service.utils import status  # HTTP Status Codes
 
 from tests.factories import RecommendationFactory
 
+from flask.logging import create_logger
+
 BASE_URL = "/recommendations"
 CONTENT_TYPE_JSON = "application/json"
 
@@ -47,7 +49,7 @@ class TestRecommendationServer(TestCase):
         app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(
             basedir, "database.db"
         )
-        app.logger.setLevel(logging.CRITICAL)
+        create_logger(app).setLevel(logging.CRITICAL)
         init_db()
 
     @classmethod
