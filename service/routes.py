@@ -105,11 +105,11 @@ def list_recommendations():
         rec = Recommendation.find_by_params(product_id, rec_type)
         if not rec:
             abort(
-            status.HTTP_404_NOT_FOUND,
-            "Recommendation was not found.",
-        )
+                status.HTTP_404_NOT_FOUND,
+                "Recommendation was not found.",
+                )
     else:
-        rec=Recommendation.all()
+        rec = Recommendation.all()
     message = [recommendation.serialize() for recommendation in rec]
     return jsonify(message), status.HTTP_200_OK
 
