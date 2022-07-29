@@ -4,9 +4,9 @@ My Service
 Describe what your service does here
 """
 from flask import abort, jsonify, make_response, request, url_for
+from flask.logging import create_logger
 
 from service.models import Recommendation
-from flask.logging import create_logger
 
 # Import Flask application
 from . import app
@@ -32,14 +32,7 @@ def health():
 def index():
     """Root URL response"""
     create_logger(app).info("Request for Root URL ")
-    return (
-        jsonify(
-            name="Recommendations REST API Service",
-            version="1.0",
-            path=url_for("list_recommendations", _external=True),
-        ),
-        status.HTTP_200_OK,
-    )
+    return app.send_static_file("index.html")
 
 
 ######################################################################
