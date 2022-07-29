@@ -19,7 +19,7 @@ spec:
       restartPolicy: Always
       containers:
       - name: recommendations
-        image: us.icr.io/qiheng-10/recommendations:1.0
+        image: us.icr.io/qw2102/recommendations:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
