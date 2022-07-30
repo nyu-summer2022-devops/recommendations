@@ -160,7 +160,22 @@ class TestRecommendationServer(TestCase):
 
     def test_list_recommendation_not_found(self):
         """It should not get recommendations thats not found"""
-        response = self.client.get(f"{BASE_URL}")
+        # create the recommendation
+        test_rec = RecommendationFactory()
+        logging.debug("Test Recommendation: %s", test_rec.serialize())
+        response = self.client.post(
+            BASE_URL, json=test_rec.serialize(), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # update the recommendation with product_id
+        new_rec = response.get_json()
+        new_rec[PRODUCT_ID] = 1
+        response = self.client.put(
+            f"{BASE_URL}/{new_rec[ID]}",
+            json=new_rec,
+            content_type=CONTENT_TYPE_JSON,
+        )
+        response = self.client.get(f"{BASE_URL}?product_id=2")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         data = response.get_json()
         logging.debug("Response data = %s", data)
