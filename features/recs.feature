@@ -54,3 +54,64 @@ Scenario: Search for rec_type
     Then I should see the message "Success"
     And I should see "baz" in the results
     And I should not see "fu" in the results
+
+Scenario: List all recommendations
+    When I visit the "Home Page"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "foo" in the results
+    And I should see "baz" in the results
+    And I should see "quux" in the results
+    And I should see "corge" in the results
+    And I should not see "bik" in the results
+
+# Scenario: Search for dogs
+#     When I visit the "Home Page"
+#     And I set the "Category" to "dog"
+#     And I press the "Search" button
+#     Then I should see the message "Success"
+#     And I should see "fido" in the results
+#     And I should not see "kitty" in the results
+#     And I should not see "leo" in the results
+
+# Scenario: Search for available
+#     When I visit the "Home Page"
+#     And I select "True" in the "Available" dropdown
+#     And I press the "Search" button
+#     Then I should see the message "Success"
+#     And I should see "fido" in the results
+#     And I should see "kitty" in the results
+#     And I should see "sammy" in the results
+#     And I should not see "leo" in the results
+
+Scenario: Update a Recommendation
+    When I visit the "Home Page"
+    And I set the "Product ID" to "1"
+    And I select "Up Sell" in the "Rec Type" dropdown
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "1" in the "Product ID" field
+    And I should see "foo" in the "Product Name" field
+    And I should see "2" in the "Rec ID" field
+    And I should see "bar" in the "Rec Name" field
+    And I should see "Up Sell" in the "Rec Type" dropdown
+    And I should see "0" in the "Like Num" field
+    When I change "Product Name" to "fu"
+    And I press the "Update" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see the message "Success"
+    And I should see "1" in the "Product ID" field
+    And I should see "fu" in the "Product Name" field
+    And I should see "2" in the "Rec ID" field
+    And I should see "bar" in the "Rec Name" field
+    And I should see "Up Sell" in the "Rec Type" dropdown
+    And I should see "0" in the "Like Num" field
+    When I press the "Clear" button
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "fu" in the results
+    And I should not see "foo" in the results
