@@ -47,13 +47,15 @@ Scenario: Create a Recommendation
     And I should see "Cross Sell" in the "Rec Type" dropdown
     And I should see "0" in the "Like Num" field
 
-# Scenario: List all pets
-#     When I visit the "Home Page"
-#     And I press the "Search" button
-#     Then I should see the message "Success"
-#     And I should see "fido" in the results
-#     And I should see "kitty" in the results
-#     And I should not see "leo" in the results
+Scenario: List all recommendations
+    When I visit the "Home Page"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "foo" in the results
+    And I should see "baz" in the results
+    And I should see "quux" in the results
+    And I should see "corge" in the results
+    And I should not see "bik" in the results
 
 # Scenario: Search for dogs
 #     When I visit the "Home Page"
