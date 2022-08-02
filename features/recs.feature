@@ -47,6 +47,15 @@ Scenario: Create a Recommendation
     And I should see "Cross Sell" in the "Rec Type" dropdown
     And I should see "0" in the "Like Num" field
 
+
+Scenario: Search for product_id
+    When I visit the "Home Page"
+    And I set the "Product_ID" to "1"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    Then I should see "foo" in the results
+    Then I should not see "fu" in the results  
+
 Scenario: List all recommendations
     When I visit the "Home Page"
     And I press the "Search" button
@@ -66,14 +75,13 @@ Scenario: List all recommendations
 #     And I should not see "kitty" in the results
 #     And I should not see "leo" in the results
 
-# Scenario: Search for available
+
+# Scenario: List all pets
 #     When I visit the "Home Page"
-#     And I select "True" in the "Available" dropdown
 #     And I press the "Search" button
 #     Then I should see the message "Success"
 #     And I should see "fido" in the results
 #     And I should see "kitty" in the results
-#     And I should see "sammy" in the results
 #     And I should not see "leo" in the results
 
 Scenario: Update a Recommendation
