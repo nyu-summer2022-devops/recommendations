@@ -120,6 +120,94 @@ $(function () {
     });
 
     // ****************************************
+    // Like a Recommendation
+    // ****************************************
+
+    $("#like-btn").click(function () {
+
+        let id = parseInt($("#rec_id").val());
+        let productId = parseInt($("#rec_product_id").val());
+        let productName = $("#rec_product_name").val();
+        let recId = parseInt($("#rec_rec_id").val());
+        let recName = $("#rec_rec_name").val();
+        let recType = $("#rec_rec_type").val();
+        let likeNum = parseInt($("#rec_like_num").val());
+
+        let data = {
+            "id": id,
+            "product_id": productId,
+            "product_name": productName,
+            "rec_id": recId,
+            "rec_name": recName,
+            "rec_type": recType,
+            "like_num": likeNum
+        };
+
+        $("#flash_message").empty();
+
+        let ajax = $.ajax({
+                type: "PUT",
+                url: `/recommendations/${id}/like`,
+                contentType: "application/json",
+                data: JSON.stringify(data)
+            })
+
+        ajax.done(function(res){
+            update_form_data(res)
+            flash_message("Success")
+        });
+
+        ajax.fail(function(res){
+            flash_message(res.responseJSON.message)
+        });
+
+    });    
+
+    // ****************************************
+    // Unlike a Recommendation
+    // ****************************************
+
+    $("#unlike-btn").click(function () {
+
+        let id = parseInt($("#rec_id").val());
+        let productId = parseInt($("#rec_product_id").val());
+        let productName = $("#rec_product_name").val();
+        let recId = parseInt($("#rec_rec_id").val());
+        let recName = $("#rec_rec_name").val();
+        let recType = $("#rec_rec_type").val();
+        let likeNum = parseInt($("#rec_like_num").val());
+
+        let data = {
+            "id": id,
+            "product_id": productId,
+            "product_name": productName,
+            "rec_id": recId,
+            "rec_name": recName,
+            "rec_type": recType,
+            "like_num": likeNum
+        };
+
+        $("#flash_message").empty();
+
+        let ajax = $.ajax({
+                type: "PUT",
+                url: `/recommendations/${id}/unlike`,
+                contentType: "application/json",
+                data: JSON.stringify(data)
+            })
+
+        ajax.done(function(res){
+            update_form_data(res)
+            flash_message("Success")
+        });
+
+        ajax.fail(function(res){
+            flash_message(res.responseJSON.message)
+        });
+
+    }); 
+
+    // ****************************************
     // Retrieve a Recommendation
     // ****************************************
 
