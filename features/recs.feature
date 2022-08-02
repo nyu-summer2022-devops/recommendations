@@ -10,6 +10,7 @@ Background:
         | 2          | baz          | 3      | qux      | CROSS_SELL| 0        |
         | 3          | quux         | 4      | quuz     | ACCESSORY | 0        |
         | 4          | corge        | 5      | grault   | BUY_WITH  | 0        |
+        | 5          | bike         | 6      | helmet   | ACCESSORY | 1        |
 
 Scenario: The server is running
     When I visit the "Home Page"
@@ -105,3 +106,81 @@ Scenario: Update a Recommendation
     Then I should see the message "Success"
     And I should see "fu" in the results
     And I should not see "foo" in the results
+
+Scenario: Like a Recommendation
+    When I visit the "Home Page"
+    And I set the "Product ID" to "1"
+    And I select "Up Sell" in the "Rec Type" dropdown
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "1" in the "Product ID" field
+    And I should see "foo" in the "Product Name" field
+    And I should see "2" in the "Rec ID" field
+    And I should see "bar" in the "Rec Name" field
+    And I should see "Up Sell" in the "Rec Type" dropdown
+    And I should see "0" in the "Like Num" field
+    When I press the "Like" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see the message "Success"
+    And I should see "1" in the "Product ID" field
+    And I should see "foo" in the "Product Name" field
+    And I should see "2" in the "Rec ID" field
+    And I should see "bar" in the "Rec Name" field
+    And I should see "Up Sell" in the "Rec Type" dropdown
+    And I should see "1" in the "Like Num" field
+
+Scenario: Unlike a Recommendation
+    # like_num unchange
+    When I visit the "Home Page"
+    And I set the "Product ID" to "1"
+    And I select "Up Sell" in the "Rec Type" dropdown
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "1" in the "Product ID" field
+    And I should see "foo" in the "Product Name" field
+    And I should see "2" in the "Rec ID" field
+    And I should see "bar" in the "Rec Name" field
+    And I should see "Up Sell" in the "Rec Type" dropdown
+    And I should see "0" in the "Like Num" field
+    When I press the "Unlike" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see the message "Success"
+    And I should see "1" in the "Product ID" field
+    And I should see "foo" in the "Product Name" field
+    And I should see "2" in the "Rec ID" field
+    And I should see "bar" in the "Rec Name" field
+    And I should see "Up Sell" in the "Rec Type" dropdown
+    And I should see "0" in the "Like Num" field
+    # like_num change
+    When I visit the "Home Page"
+    And I set the "Product ID" to "5"
+    And I select "Accessory" in the "Rec Type" dropdown
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "5" in the "Product ID" field
+    And I should see "bike" in the "Product Name" field
+    And I should see "6" in the "Rec ID" field
+    And I should see "helmet" in the "Rec Name" field
+    And I should see "Accessory" in the "Rec Type" dropdown
+    And I should see "1" in the "Like Num" field
+    When I press the "Unlike" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see the message "Success"
+    And I should see "5" in the "Product ID" field
+    And I should see "bike" in the "Product Name" field
+    And I should see "6" in the "Rec ID" field
+    And I should see "helmet" in the "Rec Name" field
+    And I should see "Accessory" in the "Rec Type" dropdown
+    And I should see "0" in the "Like Num" field
