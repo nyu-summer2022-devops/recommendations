@@ -18,9 +18,7 @@
 # flake8: noqa
 """
 Web Steps
-
 Steps file for web interactions with Selenium
-
 For information on Waiting until elements are present in the HTML see:
     https://selenium-python.readthedocs.io/waits.html
 """
@@ -40,7 +38,7 @@ def step_impl(context):
     """ Make a call to the base URL """
     context.driver.get(context.BASE_URL)
     # Uncomment next line to take a screenshot of the web page
-    context.driver.save_screenshot('home_page.png')
+    # context.driver.save_screenshot('home_page.png')
 
 @then('I should see "{message}" in the title')
 def step_impl(context, message):
@@ -74,7 +72,6 @@ def step_impl(context, text, element_name):
 
 @then('the "{element_name}" field should be empty')
 def step_impl(context, element_name):
-    context.driver.save_screenshot('home_page.png')
     element_id = ID_PREFIX + element_name.lower().replace(' ', '_')
     element = context.driver.find_element_by_id(element_id)
     expect(element.get_attribute('value')).to_be(u'')

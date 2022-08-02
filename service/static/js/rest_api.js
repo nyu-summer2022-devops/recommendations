@@ -32,7 +32,7 @@ $(function () {
     }
 
     // ****************************************
-    // Create a Pet
+    // Create a Recommendation
     // ****************************************
 
     $("#create-btn").click(function () {
@@ -76,31 +76,34 @@ $(function () {
 
 
     // ****************************************
-    // Update a Pet
+    // Update a Recommendation
     // ****************************************
 
     $("#update-btn").click(function () {
 
-        let pet_id = $("#pet_id").val();
-        let name = $("#pet_name").val();
-        let category = $("#pet_category").val();
-        let available = $("#pet_available").val() == "true";
-        let gender = $("#pet_gender").val();
-        let birthday = $("#pet_birthday").val();
+        let id = parseInt($("#rec_id").val());
+        let productId = parseInt($("#rec_product_id").val());
+        let productName = $("#rec_product_name").val();
+        let recId = parseInt($("#rec_rec_id").val());
+        let recName = $("#rec_rec_name").val();
+        let recType = $("#rec_rec_type").val();
+        let likeNum = parseInt($("#rec_like_num").val());
 
         let data = {
-            "name": name,
-            "category": category,
-            "available": available,
-            "gender": gender,
-            "birthday": birthday
+            "id": id,
+            "product_id": productId,
+            "product_name": productName,
+            "rec_id": recId,
+            "rec_name": recName,
+            "rec_type": recType,
+            "like_num": likeNum
         };
 
         $("#flash_message").empty();
 
         let ajax = $.ajax({
                 type: "PUT",
-                url: `/pets/${pet_id}`,
+                url: `/recommendations/${id}`,
                 contentType: "application/json",
                 data: JSON.stringify(data)
             })
@@ -117,18 +120,18 @@ $(function () {
     });
 
     // ****************************************
-    // Retrieve a Pet
+    // Retrieve a Recommendation
     // ****************************************
 
     $("#retrieve-btn").click(function () {
 
-        let pet_id = $("#rec_id").val();
+        let rec_id = $("#rec_id").val();
 
         $("#flash_message").empty();
 
         let ajax = $.ajax({
             type: "GET",
-            url: `/recommendations/${pet_id}`,
+            url: `/recommendations/${rec_id}`,
             contentType: "application/json",
             data: ''
         })
@@ -147,25 +150,25 @@ $(function () {
     });
 
     // ****************************************
-    // Delete a Pet
+    // Delete a Recommendation
     // ****************************************
 
     $("#delete-btn").click(function () {
 
-        let pet_id = $("#pet_id").val();
+        let rec_id = $("#rec_id").val();
 
         $("#flash_message").empty();
 
         let ajax = $.ajax({
             type: "DELETE",
-            url: `/pets/${pet_id}`,
+            url: `/recommendations/${rec_id}`,
             contentType: "application/json",
             data: '',
         })
 
         ajax.done(function(res){
             clear_form_data()
-            flash_message("Pet has been Deleted!")
+            flash_message("Recommendation has been Deleted!")
         });
 
         ajax.fail(function(res){
@@ -184,32 +187,28 @@ $(function () {
     });
 
     // ****************************************
-    // Search for a Pet
+    // Search for a Recommendation
     // ****************************************
 
     $("#search-btn").click(function () {
 
-        let name = $("#pet_name").val();
-        let category = $("#pet_category").val();
-        let available = $("#pet_available").val() == "true";
+        let product_id = $("#rec_product_id").val();
+        let rec_type = $("#rec_rec_type").val();
 
         let queryString = ""
 
-        if (name) {
-            queryString += 'name=' + name
-        }
-        if (category) {
+        if (product_id) {
             if (queryString.length > 0) {
-                queryString += '&category=' + category
+                queryString += '&product_id=' + product_id
             } else {
-                queryString += 'category=' + category
+                queryString += 'product_id=' + product_id
             }
         }
-        if (available) {
+        if (rec_type) {
             if (queryString.length > 0) {
-                queryString += '&available=' + available
+                queryString += '&rec_type=' + rec_type
             } else {
-                queryString += 'available=' + available
+                queryString += 'rec_type=' + rec_type
             }
         }
 
@@ -217,7 +216,7 @@ $(function () {
 
         let ajax = $.ajax({
             type: "GET",
-            url: `/pets?${queryString}`,
+            url: `/recommendations?${queryString}`,
             contentType: "application/json",
             data: ''
         })
@@ -228,26 +227,29 @@ $(function () {
             let table = '<table class="table table-striped" cellpadding="10">'
             table += '<thead><tr>'
             table += '<th class="col-md-2">ID</th>'
-            table += '<th class="col-md-2">Name</th>'
-            table += '<th class="col-md-2">Category</th>'
-            table += '<th class="col-md-2">Available</th>'
-            table += '<th class="col-md-2">Gender</th>'
-            table += '<th class="col-md-2">Birthday</th>'
+            table += '<th class="col-md-2">Product ID</th>'
+            table += '<th class="col-md-2">Product Name</th>'
+            table += '<th class="col-md-2">Rec ID</th>'
+            table += '<th class="col-md-2">Rec Name</th>'
+            table += '<th class="col-md-2">Rec Type</th>'
+            table += '<th class="col-md-2">Like</th>'
             table += '</tr></thead><tbody>'
-            let firstPet = "";
+            let firstRec = "";
             for(let i = 0; i < res.length; i++) {
-                let pet = res[i];
-                table +=  `<tr id="row_${i}"><td>${pet.id}</td><td>${pet.name}</td><td>${pet.category}</td><td>${pet.available}</td><td>${pet.gender}</td><td>${pet.birthday}</td></tr>`;
+                let rec = res[i];
+                table +=  `<tr id="row_${i}"><td>${rec.id}</td><td>${rec.product_id}</td>
+                <td>${rec.product_name}</td><td>${rec.rec_id}</td><td>${rec.rec_name}</td>
+                <td>${rec.rec_type}</td><td>${rec.like_num}</td></tr>`;
                 if (i == 0) {
-                    firstPet = pet;
+                    firstRec = rec;
                 }
             }
             table += '</tbody></table>';
             $("#search_results").append(table);
 
             // copy the first result to the form
-            if (firstPet != "") {
-                update_form_data(firstPet)
+            if (firstRec != "") {
+                update_form_data(firstRec)
             }
 
             flash_message("Success")

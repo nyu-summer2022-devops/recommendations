@@ -16,9 +16,7 @@
 
 """
 Pet Steps
-
 Steps file for Pet.feature
-
 For information on Waiting until elements are present in the HTML see:
     https://selenium-python.readthedocs.io/waits.html
 """
@@ -41,6 +39,7 @@ def step_impl(context):
     # load the database with new pets
     for row in context.table:
         payload = {
+            "id": 0,
             "product_id": row['product_id'],
             "product_name": row['product_name'],
             "rec_id": row['rec_id'],
