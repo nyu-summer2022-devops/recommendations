@@ -47,13 +47,6 @@ Scenario: Create a Recommendation
     And I should see "Cross Sell" in the "Rec Type" dropdown
     And I should see "0" in the "Like Num" field
 
-Scenario: Search for rec_type
-    When I visit the "Home Page"
-    And I select "Cross Sell" in the "Rec Type" dropdown
-    And I press the "Search" button
-    Then I should see the message "Success"
-    And I should see "baz" in the results
-    And I should not see "fu" in the results
 
 Scenario: Search for product_id
     When I visit the "Home Page"
