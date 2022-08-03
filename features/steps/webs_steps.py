@@ -162,3 +162,14 @@ def step_impl(context, element_name, text_string):
     )
     element.clear()
     element.send_keys(text_string)
+
+##################################################################
+# Function for matching the prefix of flash message with text
+##################################################################
+
+@then('I should see the message starts with "{text}"')
+def step_impl(context, text):
+    element = WebDriverWait(context.driver, context.WAIT_SECONDS).until(
+        expected_conditions.presence_of_element_located((By.ID, 'flash_message'))
+    )
+    expect(element.text.startswith(text)).to_be(True)
