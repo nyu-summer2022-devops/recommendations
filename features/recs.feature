@@ -72,7 +72,7 @@ Scenario: List all recommendations
     And I should see "baz" in the results
     And I should see "quux" in the results
     And I should see "corge" in the results
-    And I should not see "bik" in the results
+    And I should not see "tea" in the results
 
 # Scenario: Search for dogs
 #     When I visit the "Home Page"
@@ -201,3 +201,21 @@ Scenario: Unlike a Recommendation
     And I should see "helmet" in the "Rec Name" field
     And I should see "Accessory" in the "Rec Type" dropdown
     And I should see "0" in the "Like Num" field
+
+Scenario: Delete a Recommendation
+    When I visit the "Home Page"
+    And I set the "Product ID" to "1"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "1" in the "Product ID" field
+    And I should see "foo" in the "Product Name" field
+    And I should see "2" in the "Rec ID" field
+    And I should see "bar" in the "Rec Name" field
+    And I should see "Up Sell" in the "Rec Type" dropdown
+    And I should see "0" in the "Like Num" field
+    When I copy the "Id" field
+    And I press the "Delete" button
+    Then I should see the message "Recommendation has been Deleted!"
+    When I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see the message starts with "404 Not Found"
