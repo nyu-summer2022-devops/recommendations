@@ -72,7 +72,7 @@ Scenario: List all recommendations
     And I should see "baz" in the results
     And I should see "quux" in the results
     And I should see "corge" in the results
-    And I should not see "bik" in the results
+    And I should not see "tea" in the results
 
 # Scenario: Search for dogs
 #     When I visit the "Home Page"
