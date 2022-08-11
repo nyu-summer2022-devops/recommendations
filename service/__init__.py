@@ -9,11 +9,37 @@ import sys
 from flask import Flask
 from service import config
 from .utils import log_handlers
+from flask_restx import Api
 from flask.logging import create_logger
 
 # Create Flask application
 app = Flask(__name__)
+app.url_map.strict_slashes = False
 app.config.from_object(config)
+
+# Document the type of authorization required
+authorizations = {
+    'apikey': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'X-Api-Key'
+    }
+}
+
+######################################################################
+# Configure Swagger before initializing it
+######################################################################
+api = Api(app,
+          version='1.0.0',
+          title='Recommendation REST API Service',
+          description='This is Recommendation server.',
+          default='recommendations',
+          default_label='Recommendation operations',
+          doc='/apidocs', # default also could use doc='/apidocs/'
+          authorizations=authorizations,
+          prefix='/api'
+         )
+
 
 # Dependencies require we import the routes AFTER the Flask app is created
 from service import (  # noqa: F401, E402 # pylint: disable=wrong-import-position, wrong-import-order
