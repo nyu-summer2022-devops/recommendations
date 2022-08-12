@@ -37,8 +37,8 @@ def index():
 
 # Define the model so that the docs reflect what can be sent
 recommendation_model = api.model('Recommendation', {
-    'id': fields.Integer(required=True,
-                          description='The unique id'),
+    'id': fields.Integer(readOnly=True,
+                          description='The unique id assigned internally by service'),
     'product_id': fields.Integer(required=True,
                               description='The id of the product'),
     'product_name': fields.String(required=True,
