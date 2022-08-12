@@ -35,10 +35,10 @@ api = Api(app,
           description='This is Recommendation server.',
           default='recommendations',
           default_label='Recommendation operations',
-          doc='/apidocs', # default also could use doc='/apidocs/'
+          doc='/apidocs',  # default also could use doc='/apidocs/'
           authorizations=authorizations,
           prefix='/api'
-         )
+          )
 
 
 # Dependencies require we import the routes AFTER the Flask app is created
