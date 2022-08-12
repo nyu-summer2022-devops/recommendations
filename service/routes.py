@@ -5,6 +5,7 @@ Describe what your service does here
 """
 from flask import abort, jsonify, make_response, request, url_for
 from flask.logging import create_logger
+from flask_restx import fields
 
 from service.models import Recommendation, Type
 
