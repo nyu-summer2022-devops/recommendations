@@ -36,6 +36,7 @@ def request_validation_error(error):
         'message': message
     }, status.HTTP_400_BAD_REQUEST
 
+
 @api.errorhandler(DatabaseConnectionError)
 def database_connection_error(error):
     """ Handles Database Errors from connection attempts """

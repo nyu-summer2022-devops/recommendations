@@ -3,9 +3,9 @@ My Service
 
 Describe what your service does here
 """
-from flask import abort, jsonify, make_response, request, url_for
+from flask import abort, jsonify, request
 from flask.logging import create_logger
-from flask_restx import Api, Resource, fields, reqparse, inputs
+from flask_restx import Resource, fields, reqparse
 
 from service.models import Recommendation, Type
 
@@ -35,8 +35,6 @@ def index():
     create_logger(app).info("Request for Root URL ")
     return app.send_static_file("index.html")
 
-
-
 # Define the model so that the docs reflect what can be sent
 create_model = api.model('Recommendation', {
 
@@ -54,27 +52,28 @@ create_model = api.model('Recommendation', {
                                description='The like count of the recommendation'),
 })
 
-recommendation_model = api.inherit(  
-    'RecommendationModel', 
+recommendation_model = api.inherit(
+    'RecommendationModel',
     create_model,
     {
-        'id': fields.Integer(readOnly=True,
-                            description='The unique id assigned internally by service'),
+        'id': fields.Integer(
+            readOnly=True, description='The unique id assigned internally by service'
+        ),
     }
 )
 
-# query string arguments  
+# query string arguments
 rec_args = reqparse.RequestParser()
 rec_args.add_argument('product_id', type=str, required=False, help='List Recommendations by product_id')
 rec_args.add_argument('rec_type', type=str, required=False, help='List Recommendations by rec_type')
 
 
 ######################################################################
-#  PATH: /recommendations/{id} 
+#  PATH: /recommendations/{id}
 ######################################################################
 @api.route('/recommendations/<id>')
 @api.param('id', 'The Recommendation identifier')
-class RecommendationResource(Resource):   
+class RecommendationResource(Resource):
     """
     RecommendationResource class
 
@@ -184,7 +183,6 @@ class RecommendationsCollection(Resource):
             rec = Recommendation.all()
         message = [recommendation.serialize() for recommendation in rec]
         return message, status.HTTP_200_OK
-
 
     # ------------------------------------------------------------------
     # ADD A NEW RECOMMENDATION

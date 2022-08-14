@@ -330,7 +330,6 @@ class TestRecommendationServer(TestCase):
             json=new_rec,
             content_type=CONTENT_TYPE_JSON,
         )
-        
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         updated_recommendation = response.get_json()
         logging.debug("New Recommendation: %s", updated_recommendation)

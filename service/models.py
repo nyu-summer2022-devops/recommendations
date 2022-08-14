@@ -30,8 +30,10 @@ class Type(str, enum.Enum):
     ACCESSORY = "ACCESSORY"
     BUY_WITH = "BUY_WITH"
 
+
 class DatabaseConnectionError(Exception):
     """Custom Exception when database connection fails"""
+
 
 class DataValidationError(Exception):
     """Used for an data validation errors when deserializing"""

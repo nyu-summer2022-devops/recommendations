@@ -19,7 +19,6 @@ app.url_map.strict_slashes = False
 app.config.from_object(config)
 
 
-
 ######################################################################
 # Configure Swagger before initializing it
 ######################################################################
