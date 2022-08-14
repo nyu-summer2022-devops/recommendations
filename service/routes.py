@@ -5,11 +5,12 @@ Describe what your service does here
 """
 from flask import abort, jsonify, make_response, request, url_for
 from flask.logging import create_logger
+from flask_restx import fields
 
-from service.models import Recommendation
+from service.models import Recommendation, Type
 
 # Import Flask application
-from . import app
+from . import app, api
 from .utils import status  # HTTP Status Codes
 
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
@@ -33,6 +34,25 @@ def index():
     """Root URL response"""
     create_logger(app).info("Request for Root URL ")
     return app.send_static_file("index.html")
+
+
+# Define the model so that the docs reflect what can be sent
+recommendation_model = api.model('Recommendation', {
+    'id': fields.Integer(readOnly=True,
+                         description='The unique id assigned internally by service'),
+    'product_id': fields.Integer(required=True,
+                                 description='The id of the product'),
+    'product_name': fields.String(required=True,
+                                  description='The name of the product'),
+    'rec_id': fields.Integer(required=True,
+                             description='The id of the recommended product'),
+    'rec_name': fields.String(required=True,
+                              description='The name of the recommended product'),
+    'rec_type': fields.String(enum=Type._member_names_,
+                              description='The type of the recommendation (e.g., cross-sell, up-sell)'),
+    'like_num': fields.Integer(required=True,
+                               description='The like count of the recommendation'),
+})
 
 
 ######################################################################
