@@ -15,8 +15,8 @@
 ######################################################################
 
 """
-Pet Steps
-Steps file for Pet.feature
+Recommendation Steps
+Steps file for Recommendation.feature
 For information on Waiting until elements are present in the HTML see:
     https://selenium-python.readthedocs.io/waits.html
 """
@@ -28,15 +28,15 @@ from compare import expect
 @given('the following recs')
 def step_impl(context):
     """ Delete all Recs and load new ones """
-    # List all of the pets and delete them one by one
-    rest_endpoint = f"{context.BASE_URL}/recommendations"
+    # List all of the recommendations and delete them one by one
+    rest_endpoint = f"{context.BASE_URL}/api/recommendations"
     context.resp = requests.get(rest_endpoint)
     expect(context.resp.status_code).to_equal(200)
     for rec in context.resp.json():
         context.resp = requests.delete(f"{rest_endpoint}/{rec['id']}")
         expect(context.resp.status_code).to_equal(204)
 
-    # load the database with new pets
+    # load the database with new recommendations
     for row in context.table:
         payload = {
             "id": 0,

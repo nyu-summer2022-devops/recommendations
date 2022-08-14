@@ -6,6 +6,7 @@ All of the models are stored in this module
 import enum
 import logging
 
+
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Enum
 
@@ -28,6 +29,10 @@ class Type(str, enum.Enum):
     UP_SELL = "UP_SELL"
     ACCESSORY = "ACCESSORY"
     BUY_WITH = "BUY_WITH"
+
+
+class DatabaseConnectionError(Exception):
+    """Custom Exception when database connection fails"""
 
 
 class DataValidationError(Exception):
@@ -104,7 +109,7 @@ class Recommendation(db.Model):
             PRODUCT_NAME: self.product_name,
             REC_ID: self.rec_id,
             REC_NAME: self.rec_name,
-            REC_TYPE: self.rec_type,
+            REC_TYPE: self.rec_type.name,
             LIKE_NUM: self.like_num,
         }
 
@@ -129,9 +134,7 @@ class Recommendation(db.Model):
             )
         except TypeError as error:
             raise DataValidationError(
-                """Invalid Recommendation: body of request contained
-                bad or no data"""
-                + error.args[0]
+                """Invalid Recommendation: body of request contained bad or no data""" + error.args[0]
             )
         return self
 

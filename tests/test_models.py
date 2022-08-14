@@ -243,7 +243,7 @@ class TestRecommendationModel(unittest.TestCase):
 
     def test_serialize_a_rec(self):
         """It should serialize a Rec"""
-        rec = Recommendation()
+        rec = RecommendationFactory()
         data = rec.serialize()
         self.assertNotEqual(data, None)
         self.assertIn(ID, data)
@@ -257,7 +257,7 @@ class TestRecommendationModel(unittest.TestCase):
         self.assertIn(REC_NAME, data)
         self.assertEqual(data[REC_NAME], rec.rec_name)
         self.assertIn(REC_TYPE, data)
-        self.assertEqual(data[REC_TYPE], rec.rec_type)
+        self.assertEqual(data[REC_TYPE], rec.rec_type.name)
         self.assertEqual(data[LIKE_NUM], rec.like_num)
 
     def test_deserialize_a_rec(self):
