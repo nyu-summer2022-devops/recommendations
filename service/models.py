@@ -29,6 +29,8 @@ class Type(str, enum.Enum):
     ACCESSORY = "ACCESSORY"
     BUY_WITH = "BUY_WITH"
 
+class DatabaseConnectionError(Exception):
+    """Custom Exception when database connection fails"""
 
 class DataValidationError(Exception):
     """Used for an data validation errors when deserializing"""
@@ -129,9 +131,7 @@ class Recommendation(db.Model):
             )
         except TypeError as error:
             raise DataValidationError(
-                """Invalid Recommendation: body of request contained
-                bad or no data"""
-                + error.args[0]
+                """Invalid Recommendation: body of request contained bad or no data""" + error.args[0]
             )
         return self
 

@@ -74,24 +74,6 @@ Scenario: List all recommendations
     And I should see "corge" in the results
     And I should not see "tea" in the results
 
-# Scenario: Search for dogs
-#     When I visit the "Home Page"
-#     And I set the "Category" to "dog"
-#     And I press the "Search" button
-#     Then I should see the message "Success"
-#     And I should see "fido" in the results
-#     And I should not see "kitty" in the results
-#     And I should not see "leo" in the results
-
-
-# Scenario: List all pets
-#     When I visit the "Home Page"
-#     And I press the "Search" button
-#     Then I should see the message "Success"
-#     And I should see "fido" in the results
-#     And I should see "kitty" in the results
-#     And I should not see "leo" in the results
-
 Scenario: Update a Recommendation
     When I visit the "Home Page"
     And I set the "Product ID" to "1"

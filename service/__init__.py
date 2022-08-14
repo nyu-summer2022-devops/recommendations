@@ -7,9 +7,10 @@ and SQL database
 import sys
 
 from flask import Flask
+from flask_restx import Api
 from service import config
 from .utils import log_handlers
-from flask_restx import Api
+
 from flask.logging import create_logger
 
 # Create Flask application
