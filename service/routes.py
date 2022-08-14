@@ -35,6 +35,7 @@ def index():
     create_logger(app).info("Request for Root URL ")
     return app.send_static_file("index.html")
 
+
 # Define the model so that the docs reflect what can be sent
 create_model = api.model('Recommendation', {
 
@@ -276,6 +277,7 @@ def init_db():
     """Initializes the SQLAlchemy app"""
     global app
     Recommendation.init_db(app)
+
 
 def check_content_type(media_type):
     """Checks that the media type is correct"""
