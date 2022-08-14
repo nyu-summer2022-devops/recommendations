@@ -84,9 +84,9 @@ class RecommendationResource(Resource):
     DELETE /recommendations/{rec_id} -  Deletes a Recommendation with the id
     """
 
-    #------------------------------------------------------------------
+    # ------------------------------------------------------------------
     # RETRIEVE A RECOMMENDATION
-    #------------------------------------------------------------------
+    # ------------------------------------------------------------------
     @api.doc('get_recommendations')
     @api.response(404, 'Recommendation not found')
     @api.marshal_with(recommendation_model)
@@ -105,9 +105,10 @@ class RecommendationResource(Resource):
             )
         create_logger(app).info("Returning recommendation: %s", rec.product_name)
         return rec.serialize(), status.HTTP_200_OK
-    #------------------------------------------------------------------
+
+    # ------------------------------------------------------------------
     # UPDATE AN EXISTING Recommendation
-    #------------------------------------------------------------------
+    # ------------------------------------------------------------------
     @api.doc('update_recommendations')
     @api.response(404, 'Recommendation not found')
     @api.response(400, 'The posted Recommendation data was not valid')
@@ -133,9 +134,9 @@ class RecommendationResource(Resource):
         create_logger(app).info("Recommendation with ID [%s] updated.", id)
         return rec.serialize(), status.HTTP_200_OK
 
-    #------------------------------------------------------------------
+    # ------------------------------------------------------------------
     # DELETE A RECOMMENDATION
-    #------------------------------------------------------------------
+    # ------------------------------------------------------------------
     @api.doc('delete_recommendations')
     @api.response(204, 'Recommendation deleted')
     def delete(self, id):
@@ -157,9 +158,9 @@ class RecommendationResource(Resource):
 @api.route('/recommendations', strict_slashes=False)
 class RecommendationsCollection(Resource):
     """ Handles all interactions with collections of Recommendations """
-    #------------------------------------------------------------------
+    # ------------------------------------------------------------------
     # LIST ALL RECOMMENDATIONS
-    #------------------------------------------------------------------
+    # ------------------------------------------------------------------
     @api.doc('list_recommendations')
     @api.expect(rec_args, validate=True)
     @api.marshal_list_with(recommendation_model)
@@ -185,9 +186,9 @@ class RecommendationsCollection(Resource):
         return message, status.HTTP_200_OK
 
 
-    #------------------------------------------------------------------
+    # ------------------------------------------------------------------
     # ADD A NEW RECOMMENDATION
-    #------------------------------------------------------------------
+    # ------------------------------------------------------------------
     @api.doc('create_recommendations')
     @api.response(400, 'The posted data was not valid')
     @api.expect(recommendation_model)
@@ -288,20 +289,6 @@ def check_content_type(media_type):
         status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
         "Content-Type must be {}".format(media_type),
     )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # ######################################################################
