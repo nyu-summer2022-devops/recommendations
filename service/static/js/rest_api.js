@@ -59,8 +59,8 @@ $(function () {
         console.log(data)
         let ajax = $.ajax({
             type: "POST",
-            url: "/recommendations",
-            contentType: "application/json",
+            url: "/api/recommendations",
+            // contentType: "application/json",
             data: JSON.stringify(data),
         });
 
@@ -103,8 +103,8 @@ $(function () {
 
         let ajax = $.ajax({
                 type: "PUT",
-                url: `/recommendations/${id}`,
-                contentType: "application/json",
+                url: `/api/recommendations/${id}`,
+                // contentType: "application/json",
                 data: JSON.stringify(data)
             })
 
@@ -147,8 +147,8 @@ $(function () {
 
         let ajax = $.ajax({
                 type: "PUT",
-                url: `/recommendations/${id}/like`,
-                contentType: "application/json",
+                url: `/api/recommendations/${id}/like`,
+                // contentType: "application/json",
                 data: JSON.stringify(data)
             })
 
@@ -191,8 +191,8 @@ $(function () {
 
         let ajax = $.ajax({
                 type: "PUT",
-                url: `/recommendations/${id}/unlike`,
-                contentType: "application/json",
+                url: `/api/recommendations/${id}/unlike`,
+                // contentType: "application/json",
                 data: JSON.stringify(data)
             })
 
@@ -219,8 +219,8 @@ $(function () {
 
         let ajax = $.ajax({
             type: "GET",
-            url: `/recommendations/${rec_id}`,
-            contentType: "application/json",
+            url: `/api/recommendations/${rec_id}`,
+            // contentType: "application/json",
             data: ''
         })
 
@@ -249,8 +249,8 @@ $(function () {
 
         let ajax = $.ajax({
             type: "DELETE",
-            url: `/recommendations/${rec_id}`,
-            contentType: "application/json",
+            url: `/api/recommendations/${rec_id}`,
+            // contentType: "application/json",
             data: '',
         })
 
@@ -304,8 +304,8 @@ $(function () {
 
         let ajax = $.ajax({
             type: "GET",
-            url: `/recommendations?${queryString}`,
-            contentType: "application/json",
+            url: `/api/recommendations?${queryString}`,
+            // contentType: "application/json",
             data: ''
         })
 

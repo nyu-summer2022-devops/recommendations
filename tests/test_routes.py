@@ -30,7 +30,7 @@ from tests.factories import RecommendationFactory
 
 from flask.logging import create_logger
 
-BASE_URL = "/recommendations"
+BASE_URL = "/api/recommendations"
 CONTENT_TYPE_JSON = "application/json"
 
 

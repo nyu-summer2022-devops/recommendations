@@ -18,14 +18,7 @@ app = Flask(__name__)
 app.url_map.strict_slashes = False
 app.config.from_object(config)
 
-# Document the type of authorization required
-authorizations = {
-    'apikey': {
-        'type': 'apiKey',
-        'in': 'header',
-        'name': 'X-Api-Key'
-    }
-}
+
 
 ######################################################################
 # Configure Swagger before initializing it

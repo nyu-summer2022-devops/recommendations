@@ -36,6 +36,7 @@ def index():
     return app.send_static_file("index.html")
 
 
+
 # Define the model so that the docs reflect what can be sent
 create_model = api.model('Recommendation', {
 
