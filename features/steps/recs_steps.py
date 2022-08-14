@@ -29,7 +29,7 @@ from compare import expect
 def step_impl(context):
     """ Delete all Recs and load new ones """
     # List all of the recommendations and delete them one by one
-    rest_endpoint = f"{context.BASE_URL}/recommendations"
+    rest_endpoint = f"{context.BASE_URL}/api/recommendations"
     context.resp = requests.get(rest_endpoint)
     expect(context.resp.status_code).to_equal(200)
     for rec in context.resp.json():

@@ -6,6 +6,7 @@ All of the models are stored in this module
 import enum
 import logging
 
+
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Enum
 
@@ -106,7 +107,7 @@ class Recommendation(db.Model):
             PRODUCT_NAME: self.product_name,
             REC_ID: self.rec_id,
             REC_NAME: self.rec_name,
-            REC_TYPE: self.rec_type,
+            REC_TYPE: self.rec_type.name,
             LIKE_NUM: self.like_num,
         }
 

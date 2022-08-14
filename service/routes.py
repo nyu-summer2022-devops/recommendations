@@ -58,7 +58,7 @@ recommendation_model = api.inherit(
     'RecommendationModel', 
     create_model,
     {
-        'id': fields.String(readOnly=True,
+        'id': fields.Integer(readOnly=True,
                             description='The unique id assigned internally by service'),
     }
 )
@@ -105,7 +105,6 @@ class RecommendationResource(Resource):
             )
         create_logger(app).info("Returning recommendation: %s", rec.product_name)
         return rec.serialize(), status.HTTP_200_OK
-
     #------------------------------------------------------------------
     # UPDATE AN EXISTING Recommendation
     #------------------------------------------------------------------
@@ -231,7 +230,6 @@ class LikeResource(Resource):
                 status.HTTP_404_NOT_FOUND,
                 f"Recommendation with id '{id}' was not found.",
             )
-
         rec.like_num += 1
         rec.update()
 

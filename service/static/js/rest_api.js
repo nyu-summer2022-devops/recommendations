@@ -60,7 +60,7 @@ $(function () {
         let ajax = $.ajax({
             type: "POST",
             url: "/api/recommendations",
-            // contentType: "application/json",
+            contentType: "application/json",
             data: JSON.stringify(data),
         });
 
@@ -104,7 +104,7 @@ $(function () {
         let ajax = $.ajax({
                 type: "PUT",
                 url: `/api/recommendations/${id}`,
-                // contentType: "application/json",
+                contentType: "application/json",
                 data: JSON.stringify(data)
             })
 
@@ -148,7 +148,7 @@ $(function () {
         let ajax = $.ajax({
                 type: "PUT",
                 url: `/api/recommendations/${id}/like`,
-                // contentType: "application/json",
+                contentType: "application/json",
                 data: JSON.stringify(data)
             })
 
@@ -192,7 +192,7 @@ $(function () {
         let ajax = $.ajax({
                 type: "PUT",
                 url: `/api/recommendations/${id}/unlike`,
-                // contentType: "application/json",
+                contentType: "application/json",
                 data: JSON.stringify(data)
             })
 
@@ -220,7 +220,7 @@ $(function () {
         let ajax = $.ajax({
             type: "GET",
             url: `/api/recommendations/${rec_id}`,
-            // contentType: "application/json",
+            contentType: "application/json",
             data: ''
         })
 
@@ -282,7 +282,6 @@ $(function () {
 
         let product_id = $("#rec_product_id").val();
         let rec_type = $("#rec_rec_type").val();
-
         let queryString = ""
 
         if (product_id) {

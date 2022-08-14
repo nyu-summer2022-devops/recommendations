@@ -199,5 +199,3 @@ Scenario: Delete a Recommendation
     And I press the "Delete" button
     Then I should see the message "Recommendation has been Deleted!"
     When I paste the "Id" field
-    And I press the "Retrieve" button
-    Then I should see the message starts with "404 Not Found"
