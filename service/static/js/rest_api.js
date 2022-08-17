@@ -55,6 +55,11 @@ $(function () {
             "like_num": likeNum
         };
 
+        if (isNaN(recId) || isNaN(productId) || recType == '') {
+            flash_message('Invalid input')
+            return;
+        }
+
         $("#flash_message").empty();
         console.log(data)
         let ajax = $.ajax({
@@ -98,6 +103,11 @@ $(function () {
             "rec_type": recType,
             "like_num": likeNum
         };
+
+        if (isNaN(recId) || isNaN(productId) || recType == '') {
+            flash_message('Invalid input')
+            return;
+        }
 
         $("#flash_message").empty();
 
@@ -143,6 +153,11 @@ $(function () {
             "like_num": likeNum
         };
 
+        if (isNaN(id)) {
+            flash_message('Invalid input')
+            return;
+        }
+
         $("#flash_message").empty();
 
         let ajax = $.ajax({
@@ -186,6 +201,11 @@ $(function () {
             "rec_type": recType,
             "like_num": likeNum
         };
+
+        if (isNaN(id)) {
+            flash_message('Invalid input')
+            return;
+        }
 
         $("#flash_message").empty();
 
