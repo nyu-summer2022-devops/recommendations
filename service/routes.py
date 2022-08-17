@@ -48,7 +48,7 @@ create_model = api.model('Recommendation', {
     'rec_name': fields.String(required=True,
                               description='The name of the recommended product'),
     'rec_type': fields.String(enum=Type._member_names_,
-                              description='The type of the recommendation (e.g., cross-sell, up-sell)'),
+                              description='The type of the recommendation (e.g., cross-sell,  up-sell)'),
     'like_num': fields.Integer(required=True,
                                description='The like count of the recommendation'),
 })
@@ -122,12 +122,14 @@ class RecommendationResource(Resource):
         """
         create_logger(app).info("Request to update Recommendation with id: %s", id)
         rec = Recommendation.find(id)
+        create_logger(app).info("found rec!")
         if not rec:
             abort(
                 status.HTTP_404_NOT_FOUND,
                 f"Recommendation with id '{id}' was not found.",
             )
         create_logger(app).debug('Payload = %s', api.payload)
+        create_logger(app).info(api.payload)
         rec.deserialize(api.payload)
         rec.id = id
         rec.update()
