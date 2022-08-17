@@ -54,6 +54,18 @@ DELETE: `/recommendations/<int:id>`
 
 GET: `/recommendations`
 
+### 6. Like a recommendation
+
+PUT: `/recommendations/<int:id>/like`
+
+### 7. Unlike a recommendation
+
+PUT: `/recommendations/<int:id>/unlike`
+
+## 8. Add Query route
+
+GET: `/recommendations?product_id=1&rec_type=accessory`
+
 ## Contents
 
 The project contains the following:
@@ -80,6 +92,13 @@ tests/              - test cases package
 ├── __init__.py     - package initializer
 ├── test_models.py  - test suite for business models
 └── test_routes.py  - test suite for service routes
+
+features/           - for bdd testing
+├── environment.py
+├── recs.feature
+└── steps
+     ├── recs_steps.py
+     └── webs_steps.py
 ```
 
 ## Recommendation Squad Members
