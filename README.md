@@ -32,39 +32,39 @@ rec_type : the type of recommendation (CROSS_SELL = 0, UP_SELL = 1, ACCESSORY = 
 
 ### 1. Create a new recommendation
 
-POST: `/recommendations`
+POST: `/api/recommendations`
 
 fields: product_id, product_name, rec_id, rec_name, rec_type
 
 ### 2. Read a recommendation
 
-GET: `/recommendations/<int:id>`
+GET: `/api/recommendations/<int:id>`
 
 fields: product_id, product_name, rec_id, rec_name, rec_type
 
 ### 3. Update a recommendation
 
-PUT: `/recommendations/<int:id>`
+PUT: `/api/recommendations/<int:id>`
 
 ### 4. Delete a recommendation
 
-DELETE: `/recommendations/<int:id>`
+DELETE: `/api/recommendations/<int:id>`
 
 ### 5. List recommendations
 
-GET: `/recommendations`
+GET: `/api/recommendations`
 
 ### 6. Like a recommendation
 
-PUT: `/recommendations/<int:id>/like`
+PUT: `/api/recommendations/<int:id>/like`
 
 ### 7. Unlike a recommendation
 
-PUT: `/recommendations/<int:id>/unlike`
+PUT: `/api/recommendations/<int:id>/unlike`
 
 ## 8. Add Query route
 
-GET: `/recommendations?product_id=1&rec_type=accessory`
+GET: `/api/recommendations?product_id=1&rec_type=accessory`
 
 ## Contents
 
