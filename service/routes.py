@@ -48,7 +48,7 @@ create_model = api.model('Recommendation', {
     'rec_name': fields.String(required=True,
                               description='The name of the recommended product'),
     'rec_type': fields.String(enum=Type._member_names_,
-                              description='The type of the recommendation (e.g., cross-sell, up-sell)'),
+                              description='The type of the recommendation (e.g., cross-sell,  up-sell)'),
     'like_num': fields.Integer(required=True,
                                description='The like count of the recommendation'),
 })
