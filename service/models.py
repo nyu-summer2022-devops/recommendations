@@ -67,13 +67,10 @@ class Recommendation(db.Model):
         """
         Creates a recommendation to the database
         """
-        try:
-            logger.info("Creating %s", self.product_name)
-            self.id = None  # id must be none to generate next primary key
-            db.session.add(self)
-            db.session.commit()
-        except Exception as error:
-            db.session.rollback()
+        logger.info("Creating %s", self.product_name)
+        self.id = None  # id must be none to generate next primary key
+        db.session.add(self)
+        db.session.commit()
 
     def update(self):
         """
