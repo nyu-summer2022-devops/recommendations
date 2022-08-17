@@ -129,7 +129,6 @@ class RecommendationResource(Resource):
                 f"Recommendation with id '{id}' was not found.",
             )
         create_logger(app).debug('Payload = %s', api.payload)
-        create_logger(app).info(api.payload)
         rec.deserialize(api.payload)
         rec.id = id
         rec.update()
