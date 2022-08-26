@@ -14,7 +14,7 @@ together" (e.g., radio and batteries, printers and ink, shirts and pants, etc.).
 
 The `/service` folder contains `models.py` file for the model and a `routes.py` file for the service. The `/tests` folder has test cases for testing the model and the service separately.
 
-The application is currently deployed to a Kubernetes cluster on IBM cloud. The IP address is [**here**](http://159.122.175.152:31001/)
+The application is currently deployed to a Kubernetes cluster on IBM cloud. 
 
 ## Attributes
 
@@ -32,9 +32,7 @@ rec_type : the type of recommendation (CROSS_SELL = 0, UP_SELL = 1, ACCESSORY = 
 
 ## Functionalities
 
-We built a RESTful API and a Swagger API Documentation. Main routes are also listed below in the 
-
-chart: 
+We built a [**RESTful API**](http://159.122.175.152:31001/) and a [**Swagger API Documentation**](http://159.122.175.152:31001/apidocs). Main routes are listed below in the chart: 
 | Endpoint                                  | Method    | Description |
 |-------------------------------------------|-----------|-------------|
 |`/api/recommendations `                    | **POST**  | Creates a new recommendation |
@@ -46,7 +44,7 @@ chart:
 |`/api/recommendations/<int:id>/unlike `    | **PUT**   | Unlike a recommendation |
 |`/api/recommendations ` | **GET** | Query recommendations |
 
-The **GET** method with endpoint : `/api/recommendations` suports Query Strings with multiple constraints. 
+The **GET** method with endpoint : `/api/recommendations` suports **Query** Strings with multiple constraints. 
 For instance : `/api/recommendations?product_id=1` will return the list of all recommdedations for the profuct with product id equals to 1;
 `/api/recommendations?product_id=1&rec_type=accessory` will return the list of all recommendatons for the accessories of the profuct with product id equals to 1.
 
@@ -84,6 +82,35 @@ features/           - for bdd testing
      ├── recs_steps.py
      └── webs_steps.py
 ```
+
+### Bring up development environment
+To bring up the development environment, please clone this repo, change into the repo directory, and then open Visual Studio Code using the code . command. VS Code will prompt to reopen in a container. Please select it. It will take a while the first time as it builds the Docker image and creates a container from it to develop in.
+
+```bash
+git clone git@github.com:nyu-summer2022-devops/recommendations.git
+cd recommendations
+code .
+```
+## Services
+### Run TDD tests
+Run the tests in a ```bash``` terminal using the following command: 
+```bash
+make test
+```
+Run the test suite and report the code coverage. 
+
+### Run BDD tests
+First run the REST service in a ```bash``` terminal using the following command: 
+(a web page can be opened on a local browser)
+```bash
+make run
+```
+Then start another ```bash``` terminal and run the ```behave``` test:
+```bash
+behave
+```
+
+
 
 ## Recommendation Squad Members
 
