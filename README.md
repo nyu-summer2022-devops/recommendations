@@ -32,41 +32,23 @@ rec_type : the type of recommendation (CROSS_SELL = 0, UP_SELL = 1, ACCESSORY = 
 
 ## Functionalities
 
-### 1. Create a new recommendation
+We built a RESTful API and a Swagger API Documentation. Main routes are also listed below in the 
 
-POST: `/api/recommendations`
+chart: 
+| Endpoint                                  | Method    | Description |
+|-------------------------------------------|-----------|-------------|
+|`/api/recommendations `                    | **POST**  | Creates a new recommendation |
+|`/api/recommendations/<int:id>> `          | **GET**   | Read a recommendation |
+|`/api/recommendations/<int:id> `           | **PUT**   | Update a recommendation |
+|`/api/recommendations/<int:id> `           | **DELETE**   | Delete a recommendation |
+|`/api/recommendations `                    | **GET**   | List all recommendations |
+|`/api/recommendations/<int:id>/like `      | **PUT**   | Like a recommendation |
+|`/api/recommendations/<int:id>/unlike `    | **PUT**   | Unlike a recommendation |
+|`/api/recommendations ` | **GET** | Query recommendations |
 
-fields: product_id, product_name, rec_id, rec_name, rec_type
-
-### 2. Read a recommendation
-
-GET: `/api/recommendations/<int:id>`
-
-fields: product_id, product_name, rec_id, rec_name, rec_type
-
-### 3. Update a recommendation
-
-PUT: `/api/recommendations/<int:id>`
-
-### 4. Delete a recommendation
-
-DELETE: `/api/recommendations/<int:id>`
-
-### 5. List recommendations
-
-GET: `/api/recommendations`
-
-### 6. Like a recommendation
-
-PUT: `/api/recommendations/<int:id>/like`
-
-### 7. Unlike a recommendation
-
-PUT: `/api/recommendations/<int:id>/unlike`
-
-## 8. Add Query route
-
-GET: `/api/recommendations?product_id=1&rec_type=accessory`
+The **GET** method with endpoint : `/api/recommendations` suports Query Strings with multiple constraints. 
+For instance : `/api/recommendations?product_id=1` will return the list of all recommdedations for the profuct with product id equals to 1;
+`/api/recommendations?product_id=1&rec_type=accessory` will return the list of all recommendatons for the accessories of the profuct with product id equals to 1.
 
 ## Contents
 
