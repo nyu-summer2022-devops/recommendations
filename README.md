@@ -14,6 +14,8 @@ together" (e.g., radio and batteries, printers and ink, shirts and pants, etc.).
 
 The `/service` folder contains `models.py` file for the model and a `routes.py` file for the service. The `/tests` folder has test cases for testing the model and the service separately.
 
+The application is currently deployed to a Kubernetes cluster on IBM cloud. The IP address is [**here**](http://159.122.175.152:31001/)
+
 ## Attributes
 
 id : non-information bearing key
