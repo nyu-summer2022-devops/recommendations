@@ -83,6 +83,7 @@ features/           - for bdd testing
      └── webs_steps.py
 ```
 
+## Services
 ### Bring up development environment
 To bring up the development environment, please clone this repo, change into the repo directory, and then open Visual Studio Code using the code . command. VS Code will prompt to reopen in a container. Please select it. It will take a while the first time as it builds the Docker image and creates a container from it to develop in.
 
@@ -91,7 +92,6 @@ git clone git@github.com:nyu-summer2022-devops/recommendations.git
 cd recommendations
 code .
 ```
-## Services
 ### Run TDD tests
 Run the tests in a ```bash``` terminal using the following command: 
 ```bash
